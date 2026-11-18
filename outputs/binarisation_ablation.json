@@ -1,0 +1,14 @@
+{
+  "adaptive": {
+    "images": 96,
+    "exact": 0.25,
+    "bom_f1": 0.9658,
+    "sig_f1": 0.3278
+  },
+  "flatfield": {
+    "images": 96,
+    "exact": 0.2812,
+    "bom_f1": 0.9658,
+    "sig_f1": 0.4018
+  }
+}

@@ -1,0 +1,11 @@
+numpy>=1.26
+opencv-python>=4.9
+scikit-image>=0.22
+scikit-learn>=1.4
+networkx>=3.0
+matplotlib>=3.8
+ultralytics>=8.3
+torch>=2.2
+python-docx>=1.1
+huggingface_hub>=0.23
+pytest>=8.0

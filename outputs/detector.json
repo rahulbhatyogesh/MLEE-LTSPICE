@@ -1,0 +1,19 @@
+{
+  "best_epoch": 36,
+  "epochs_run": 48,
+  "map50_val": 0.807,
+  "map50_95_val": 0.5601,
+  "precision_val": 0.8152,
+  "recall_val": 0.7523,
+  "train_minutes": 172.4,
+  "full_images": 96,
+  "full_exact": 0.3229,
+  "full_bom_f1": 0.9653,
+  "full_sig_f1": 0.4265,
+  "exact": 0.3229,
+  "bom_f1": 0.9653,
+  "sig_f1": 0.4265,
+  "map50": 0.807,
+  "map50_95": 0.5601,
+  "note": "mAP is on the validation drafters; the end-to-end figures use drafter 1, which was a TRAINING drafter -- the only images with reference netlists -- so they flatter the detector."
+}

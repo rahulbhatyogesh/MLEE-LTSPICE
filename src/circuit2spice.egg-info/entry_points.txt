@@ -1,0 +1,2 @@
+[console_scripts]
+circuit2spice = circuit2spice.cli:main

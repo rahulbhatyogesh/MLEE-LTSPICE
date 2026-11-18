@@ -1,0 +1,19 @@
+Metadata-Version: 2.4
+Name: circuit2spice
+Version: 0.1.0
+Summary: Hand-drawn circuit schematics to LTspice, via YOLO symbol detection and wire tracing
+Requires-Python: >=3.10
+Description-Content-Type: text/markdown
+Requires-Dist: numpy>=1.26
+Requires-Dist: opencv-python>=4.9
+Requires-Dist: scikit-image>=0.22
+Requires-Dist: scikit-learn>=1.4
+Requires-Dist: networkx>=3.0
+Requires-Dist: matplotlib>=3.8
+Provides-Extra: detect
+Requires-Dist: ultralytics>=8.3; extra == "detect"
+Requires-Dist: torch>=2.2; extra == "detect"
+Provides-Extra: report
+Requires-Dist: python-docx>=1.1; extra == "report"
+Provides-Extra: data
+Requires-Dist: huggingface_hub>=0.23; extra == "data"

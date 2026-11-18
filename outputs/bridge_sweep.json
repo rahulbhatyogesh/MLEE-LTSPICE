@@ -1,0 +1,68 @@
+[
+  {
+    "bridge_px": 0,
+    "images": 40,
+    "components": 384,
+    "completeness": 0.9724,
+    "short_rate": 0.0495,
+    "connected_frac": 0.6693,
+    "score": 0.7713,
+    "mean_nodes": 8.32,
+    "secs": 9.2
+  },
+  {
+    "bridge_px": 1,
+    "images": 40,
+    "components": 384,
+    "completeness": 0.9724,
+    "short_rate": 0.0495,
+    "connected_frac": 0.6667,
+    "score": 0.77,
+    "mean_nodes": 8.35,
+    "secs": 6.2
+  },
+  {
+    "bridge_px": 2,
+    "images": 40,
+    "components": 384,
+    "completeness": 0.9663,
+    "short_rate": 0.0495,
+    "connected_frac": 0.6667,
+    "score": 0.767,
+    "mean_nodes": 8.22,
+    "secs": 6.0
+  },
+  {
+    "bridge_px": 3,
+    "images": 40,
+    "components": 384,
+    "completeness": 0.9507,
+    "short_rate": 0.0651,
+    "connected_frac": 0.6667,
+    "score": 0.7436,
+    "mean_nodes": 7.9,
+    "secs": 6.1
+  },
+  {
+    "bridge_px": 4,
+    "images": 40,
+    "components": 384,
+    "completeness": 0.9231,
+    "short_rate": 0.1042,
+    "connected_frac": 0.6693,
+    "score": 0.692,
+    "mean_nodes": 7.53,
+    "secs": 6.4
+  },
+  {
+    "bridge_px": 6,
+    "images": 40,
+    "components": 384,
+    "completeness": 0.905,
+    "short_rate": 0.125,
+    "connected_frac": 0.6589,
+    "score": 0.657,
+    "mean_nodes": 7.22,
+    "secs": 6.2
+  }
+]

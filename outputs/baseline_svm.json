@@ -1,0 +1,137 @@
+{
+  "accuracy": 0.9196428571428571,
+  "macro_f1": 0.6376932718651797,
+  "n_train": 480,
+  "n_test": 224,
+  "labels": [
+    "capacitor",
+    "diode",
+    "inductor",
+    "resistor",
+    "source_voltage",
+    "switch",
+    "transistor_bjt"
+  ],
+  "confusion": [
+    [
+      31,
+      0,
+      0,
+      1,
+      0,
+      0,
+      0
+    ],
+    [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    [
+      0,
+      0,
+      0,
+      10,
+      1,
+      0,
+      5
+    ],
+    [
+      0,
+      1,
+      0,
+      111,
+      0,
+      0,
+      0
+    ],
+    [
+      0,
+      0,
+      0,
+      0,
+      40,
+      0,
+      0
+    ],
+    [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      24
+    ]
+  ],
+  "report": {
+    "capacitor": {
+      "precision": 1.0,
+      "recall": 0.96875,
+      "f1-score": 0.9841269841269841,
+      "support": 32.0
+    },
+    "diode": {
+      "precision": 0.0,
+      "recall": 0.0,
+      "f1-score": 0.0,
+      "support": 0.0
+    },
+    "inductor": {
+      "precision": 0.0,
+      "recall": 0.0,
+      "f1-score": 0.0,
+      "support": 16.0
+    },
+    "resistor": {
+      "precision": 0.9098360655737705,
+      "recall": 0.9910714285714286,
+      "f1-score": 0.9487179487179487,
+      "support": 112.0
+    },
+    "source_voltage": {
+      "precision": 0.975609756097561,
+      "recall": 1.0,
+      "f1-score": 0.9876543209876543,
+      "support": 40.0
+    },
+    "switch": {
+      "precision": 0.0,
+      "recall": 0.0,
+      "f1-score": 0.0,
+      "support": 0.0
+    },
+    "transistor_bjt": {
+      "precision": 0.8275862068965517,
+      "recall": 1.0,
+      "f1-score": 0.9056603773584906,
+      "support": 24.0
+    },
+    "accuracy": 0.9196428571428571,
+    "macro avg": {
+      "precision": 0.530433146938269,
+      "recall": 0.5656887755102041,
+      "f1-score": 0.5465942330272968,
+      "support": 224.0
+    },
+    "weighted avg": {
+      "precision": 0.8606611542575088,
+      "recall": 0.9196428571428571,
+      "f1-score": 0.8883504269847486,
+      "support": 224.0
+    }
+  }
+}
