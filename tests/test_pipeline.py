@@ -192,3 +192,33 @@ def test_thin_removal_falls_back_rather_than_erasing_everything():
 def test_no_detections_yields_an_empty_circuit():
     g, _ = build_circuit(_draw_loop(), [])
     assert g.components == []
+
+
+# ------------------------------------------------- learned stroke segmentation
+
+def test_unet_method_reports_clearly_when_model_is_absent():
+    """Asking for the learned segmenter without a model must say what to do,
+    not fail with an obscure torch error."""
+    from circuit2spice.segment import StrokeModelMissing, available, find_model
+
+    if available():
+        pytest.skip("a stroke model is installed")
+    with pytest.raises(StrokeModelMissing) as e:
+        find_model()
+    assert "train_unet_strokes" in str(e.value)
+
+
+@pytest.mark.skipif(
+    not __import__("circuit2spice.segment", fromlist=["x"]).available(),
+    reason="no stroke-segmentation model installed",
+)
+def test_unet_segmentation_produces_a_usable_mask():
+    img = _draw_loop()
+    from circuit2spice.segment import segment_strokes
+
+    mask = segment_strokes(img)
+    assert mask.shape == img.shape[:2]
+    assert mask.dtype == np.uint8
+    assert set(np.unique(mask)) <= {0, 255}
+    # It must find the drawn rectangle without covering the whole page.
+    assert 0.001 < (mask > 0).mean() < 0.5

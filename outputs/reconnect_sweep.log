@@ -1,0 +1,6 @@
+endpoint reconnection, on top of bridge_px=6:
+  reconnect_px=  0: images=96  exact-topology=0.344  BoM-F1=0.966  signature-F1=0.463
+  reconnect_px= 10: images=96  exact-topology=0.344  BoM-F1=0.966  signature-F1=0.463
+  reconnect_px= 16: images=96  exact-topology=0.344  BoM-F1=0.966  signature-F1=0.461
+  reconnect_px= 22: images=96  exact-topology=0.354  BoM-F1=0.966  signature-F1=0.468
+  reconnect_px= 30: images=96  exact-topology=0.354  BoM-F1=0.966  signature-F1=0.472

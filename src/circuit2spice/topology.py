@@ -81,15 +81,17 @@ def build_circuit(
     *,
     node_map: NodeMap | None = None,
     values: dict | None = None,
-    bridge_px: int | None = None,
+    bridge_px: int | None = 6,
     method: str = "flatfield",
     drop_outside: str = "none",
     thin_q: float | None = 50.0,
+    reconnect_px: float = 24.0,
 ) -> tuple[CircuitGraph, NodeMap]:
     """Turn detections into a :class:`CircuitGraph`."""
     if node_map is None:
         node_map = build_node_map(bgr, detections, bridge_px=bridge_px, method=method,
-                                  drop_outside=drop_outside, thin_q=thin_q)
+                                  drop_outside=drop_outside, thin_q=thin_q,
+                                  reconnect_px=reconnect_px)
 
     warnings: list[str] = []
     uf = UnionFind()

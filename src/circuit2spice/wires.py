@@ -90,6 +90,12 @@ def binarize(
         binary = cv2.adaptiveThreshold(
             g, 255, cv2.ADAPTIVE_THRESH_GAUSSIAN_C, cv2.THRESH_BINARY_INV, block, c
         )
+    elif method == "unet":
+        # Learned stroke/background separation. Returns a clean mask directly,
+        # so it skips the morphological clean-up the thresholds need.
+        from .segment import segment_strokes
+
+        return segment_strokes(bgr if bgr.ndim == 3 else cv2.cvtColor(gray, cv2.COLOR_GRAY2BGR))
     elif method == "flatfield":
         k = max(3, (min(gray.shape[:2]) // 20) | 1)
         bg = cv2.medianBlur(gray, min(k, 151) | 1)
@@ -194,6 +200,130 @@ def remove_thin_strokes(
     return binary if (out > 0).sum() < 0.15 * (binary > 0).sum() else out
 
 
+def _skeleton_endpoints(skel: np.ndarray) -> np.ndarray:
+    """Pixels where a skeleton stroke stops: exactly one 8-neighbour."""
+    k = np.ones((3, 3), np.uint8)
+    neigh = cv2.filter2D((skel > 0).astype(np.uint8), -1, k, borderType=cv2.BORDER_CONSTANT)
+    ends = (skel > 0) & (neigh == 2)        # 2 = itself + one neighbour
+    ys, xs = np.nonzero(ends)
+    return np.stack([xs, ys], axis=1)
+
+
+def _endpoint_direction(skel: np.ndarray, pt: np.ndarray, walk: int = 7) -> np.ndarray:
+    """Unit vector pointing *outward* along the stroke that ends at ``pt``."""
+    h, w = skel.shape
+    x, y = int(pt[0]), int(pt[1])
+    prev = {(x, y)}
+    cur = (x, y)
+    far = (x, y)
+    for _ in range(walk):
+        nxt = None
+        for dy in (-1, 0, 1):
+            for dx in (-1, 0, 1):
+                if dx == 0 and dy == 0:
+                    continue
+                nx, ny = cur[0] + dx, cur[1] + dy
+                if 0 <= nx < w and 0 <= ny < h and skel[ny, nx] and (nx, ny) not in prev:
+                    nxt = (nx, ny)
+                    break
+            if nxt:
+                break
+        if nxt is None:
+            break
+        prev.add(nxt)
+        cur = far = nxt
+    v = np.array([x - far[0], y - far[1]], dtype=np.float64)
+    n = np.linalg.norm(v)
+    return v / n if n > 1e-6 else np.array([0.0, 0.0])
+
+
+def _segment_hits_box(p, q, boxes) -> bool:
+    """True if the segment p-q passes through any erased symbol box."""
+    for x1, y1, x2, y2 in boxes:
+        # Cheap reject, then sample along the segment.
+        if max(p[0], q[0]) < x1 or min(p[0], q[0]) > x2:
+            continue
+        if max(p[1], q[1]) < y1 or min(p[1], q[1]) > y2:
+            continue
+        for t in np.linspace(0.0, 1.0, 12):
+            sx = p[0] + t * (q[0] - p[0])
+            sy = p[1] + t * (q[1] - p[1])
+            if x1 <= sx <= x2 and y1 <= sy <= y2:
+                return True
+    return False
+
+
+def reconnect_endpoints(
+    skel: np.ndarray,
+    labels: np.ndarray,
+    uf: UnionFind,
+    erased_boxes: list,
+    *,
+    max_gap: float = 18.0,
+    min_cos: float = 0.72,
+) -> int:
+    """Rejoin strokes that thresholding snapped in two.
+
+    This is the counterpart to :func:`remove_thin_strokes`.  Deleting thin
+    pixels strips printed ruling, but it also severs a pencil wire wherever the
+    drafter eased off and the stroke thinned, which shatters one electrical net
+    into several fragments and loses the connection.
+
+    Blind dilation is the wrong repair: it closes a gap by fattening everything,
+    so two unrelated wires that merely pass near each other also merge.  Instead
+    we look for *stroke ends* -- skeleton pixels with a single neighbour -- and
+    rejoin a pair only when the evidence says one stroke continues into the
+    other:
+
+    - the two ends belong to different fragments,
+    - they are closer than ``max_gap``,
+    - each end points at the other (their outward stroke directions are
+      roughly anti-parallel, hence ``min_cos``), so a T-shape or two wires
+      passing side by side is rejected, and
+    - the gap does not cross an erased symbol box -- that gap is *deliberate*,
+      and bridging it would short out the component.
+
+    Returns the number of joins made.
+    """
+    pts = _skeleton_endpoints(skel)
+    if len(pts) < 2:
+        return 0
+    dirs = np.stack([_endpoint_direction(skel, p) for p in pts])
+    labs = np.array([labels[p[1], p[0]] for p in pts])
+
+    order = np.argsort(pts[:, 0])
+    joins = 0
+    used: set = set()
+    for ii in range(len(order)):
+        i = order[ii]
+        if labs[i] == 0 or i in used:
+            continue
+        best, best_score = None, min_cos
+        for jj in range(ii + 1, len(order)):
+            j = order[jj]
+            if labs[j] == 0 or j in used:
+                continue
+            d = pts[j] - pts[i]
+            if d[0] > max_gap:
+                break                       # sorted by x: nothing closer ahead
+            dist = float(np.linalg.norm(d))
+            if dist < 1e-6 or dist > max_gap:
+                continue
+            if uf.find(int(labs[i])) == uf.find(int(labs[j])):
+                continue
+            u = d / dist
+            # Each end must point towards the other.
+            score = min(float(dirs[i] @ u), float(dirs[j] @ -u))
+            if score > best_score and not _segment_hits_box(pts[i], pts[j], erased_boxes):
+                best, best_score = j, score
+        if best is not None:
+            uf.union(int(labs[i]), int(labs[best]))
+            used.add(i)
+            used.add(best)
+            joins += 1
+    return joins
+
+
 def circuit_hull(
     shape: tuple, detections: list, margin_frac: float = 0.10
 ) -> tuple[int, int, int, int] | None:
@@ -261,17 +391,21 @@ def build_node_map(
     detections: list,
     *,
     min_fragment_px: int = 12,
-    bridge_px: int | None = None,
+    bridge_px: int | None = 6,
     method: str = "flatfield",
     drop_outside: str = "none",
     thin_q: float | None = 50.0,
+    reconnect_px: float = 24.0,
     binary: np.ndarray | None = None,
 ) -> NodeMap:
     """Trace wires and resolve them into electrical nodes."""
     if binary is None:
         binary = binarize(bgr, method=method)
     # 0. Strip page ruling and margin furniture before anything else.
-    if thin_q is not None:
+    #    The thickness filter exists to remove printed ruling a threshold
+    #    cannot; the learned segmenter already excludes it, and applying the
+    #    filter on top would only sever thin pencil strokes.
+    if thin_q is not None and method != "unet":
         binary = remove_thin_strokes(binary, thin_q)
     if drop_outside and drop_outside != "none":
         binary = drop_off_circuit(
@@ -353,6 +487,17 @@ def build_node_map(
                 uf.union(la, best)
                 used.add(la)
                 used.add(best)
+
+    # 4c. Rejoin strokes that thresholding snapped in two.  Runs last so the
+    #     explicit junction/crossover annotations take priority and this only
+    #     repairs what is still broken.
+    if reconnect_px:
+        erased = [
+            _clip_rect(d.box, work.shape)
+            for d in detections
+            if d.cls in ERASE_BEFORE_WIRES or d.cls == "crossover"
+        ]
+        reconnect_endpoints(skel, labels, uf, erased, max_gap=float(reconnect_px))
 
     # 5. Compact the merged labels into a dense 1..N node numbering.
     remap = np.zeros(max(n_lab, 1), dtype=np.int32)

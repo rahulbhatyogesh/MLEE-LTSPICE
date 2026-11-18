@@ -79,7 +79,7 @@ def predicted_elements(graph) -> dict:
     return out
 
 
-def run(bridge_px, detector=None, limit=None, method="flatfield", drop="mask", thin_q=50.0):
+def run(bridge_px, detector=None, limit=None, method="flatfield", drop="mask", thin_q=50.0, reconnect_px=0.0):
     refs = load_references()
     xmls = sorted(ROOT.glob("annotations/*.xml"))
     if limit:
@@ -98,7 +98,8 @@ def run(bridge_px, detector=None, limit=None, method="flatfield", drop="mask", t
             dets = nms_across_classes(detector(str(img_p)))
         img, dets = _load_and_scale(img_p, dets, 1600)
         g, _ = build_circuit(img, dets, bridge_px=bridge_px, method=method,
-                             drop_outside=drop, thin_q=thin_q)
+                             drop_outside=drop, thin_q=thin_q,
+                             reconnect_px=reconnect_px)
         has_gnd = any(d.cls == "gnd" for d in dets)
         rows.append(compare(xml.stem, circuit, predicted_elements(g),
                             refs[circuit], pin_ground=has_gnd))
