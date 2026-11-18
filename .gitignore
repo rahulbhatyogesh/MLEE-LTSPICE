@@ -1,34 +1,10 @@
-# --- environment -----------------------------------------------------------
+# A virtualenv has absolute paths to this machine baked into its scripts, so it
+# cannot work anywhere else. 1.4 GB of noise; recreate with:
+#   py -3.12 -m venv .venv && .venv/Scripts/python -m pip install -e ".[detect,report,data]"
 .venv/
 __pycache__/
 *.pyc
 
-# --- data (re-fetch with scripts/fetch_subset.py) ---------------------------
-data/
-
-# --- Colab download (442 MB); weights are extracted into runs/ --------------
+# 442 MB: over GitHub's 100 MB per-file hard limit, and redundant -- its
+# contents are already extracted into runs/.
 mlee_cghd-*.zip
-
-# --- model weights: too large for git, share as a GitHub Release ------------
-*.pt
-
-# --- reference papers (third-party copyright, not ours to redistribute) -----
-47.pdf
-81906871.pdf
-Liu_Xiao.pdf
-
-# --- generated outputs ------------------------------------------------------
-# Everything under outputs/ is reproducible, but the figures and the results
-# JSON are kept in the repo: build_report.py and build_poster.py read the JSON
-# to fill in the numbers, so without them the documents build with
-# "[TO BE FILLED]" placeholders.
-outputs/*
-!outputs/figures/
-!outputs/*.json
-
-# --- simulation / LaTeX build artefacts -------------------------------------
-*.raw
-*.aux
-*.synctex.gz
-*.log
-poster/*.net

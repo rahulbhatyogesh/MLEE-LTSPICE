@@ -1,0 +1,64 @@
+{
+  "n_nodes": 5,
+  "ground_node": 0,
+  "image_size": [
+    1095,
+    1280
+  ],
+  "warnings": [
+    "no ground symbol detected; using the highest-degree node as the reference node"
+  ],
+  "components": [
+    {
+      "ref": "R1",
+      "cls": "resistor",
+      "value": "1k",
+      "orientation": "R90",
+      "nodes": [
+        "0",
+        "N001"
+      ],
+      "bbox": [
+        370.0,
+        475.0,
+        541.0,
+        558.0
+      ],
+      "conf": 1.0
+    },
+    {
+      "ref": "V1",
+      "cls": "source_voltage",
+      "value": "5",
+      "orientation": "R90",
+      "nodes": [
+        "0",
+        "N002"
+      ],
+      "bbox": [
+        100.0,
+        608.0,
+        241.0,
+        766.0
+      ],
+      "conf": 1.0
+    },
+    {
+      "ref": "C1",
+      "cls": "capacitor",
+      "value": "1u",
+      "orientation": "R0",
+      "nodes": [
+        "N003",
+        "N004"
+      ],
+      "bbox": [
+        606.0,
+        683.0,
+        729.0,
+        766.0
+      ],
+      "conf": 1.0
+    }
+  ]
+}

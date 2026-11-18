@@ -1,0 +1,121 @@
+{
+  "n_nodes": 4,
+  "ground_node": 0,
+  "image_size": [
+    960,
+    1280
+  ],
+  "warnings": [
+    "resistor at (512,412) found only 1/2 terminals; left unconnected",
+    "resistor at (368,418) found only 1/2 terminals; left unconnected",
+    "diode at (388,482) found only 1/2 terminals; left unconnected",
+    "R1 has all terminals on one node (short circuit)",
+    "R2 has all terminals on one node (short circuit)",
+    "D1 has all terminals on one node (short circuit)"
+  ],
+  "components": [
+    {
+      "ref": "Q1",
+      "cls": "transistor_bjt",
+      "value": "QMOD",
+      "orientation": "R0",
+      "nodes": [
+        "N001",
+        "N002",
+        "0"
+      ],
+      "bbox": [
+        321.0,
+        286.0,
+        370.0,
+        359.0
+      ],
+      "conf": 1.0
+    },
+    {
+      "ref": "V1",
+      "cls": "source_voltage",
+      "value": "5",
+      "orientation": "R0",
+      "nodes": [
+        "N003",
+        "N002"
+      ],
+      "bbox": [
+        105.0,
+        295.0,
+        197.0,
+        389.0
+      ],
+      "conf": 1.0
+    },
+    {
+      "ref": "R1",
+      "cls": "resistor",
+      "value": "1k",
+      "orientation": "R0",
+      "nodes": [
+        "0",
+        "N-01"
+      ],
+      "bbox": [
+        501.0,
+        396.0,
+        522.0,
+        429.0
+      ],
+      "conf": 1.0
+    },
+    {
+      "ref": "R2",
+      "cls": "resistor",
+      "value": "1k",
+      "orientation": "R0",
+      "nodes": [
+        "N001",
+        "N-01"
+      ],
+      "bbox": [
+        352.0,
+        386.0,
+        384.0,
+        449.0
+      ],
+      "conf": 1.0
+    },
+    {
+      "ref": "C1",
+      "cls": "capacitor",
+      "value": "1u",
+      "orientation": "R0",
+      "nodes": [
+        "N003",
+        "0"
+      ],
+      "bbox": [
+        426.0,
+        407.0,
+        467.0,
+        437.0
+      ],
+      "conf": 1.0
+    },
+    {
+      "ref": "D1",
+      "cls": "diode",
+      "value": "DMOD",
+      "orientation": "R90",
+      "nodes": [
+        "N003",
+        "N-01"
+      ],
+      "bbox": [
+        356.0,
+        460.0,
+        421.0,
+        505.0
+      ],
+      "conf": 1.0
+    }
+  ]
+}

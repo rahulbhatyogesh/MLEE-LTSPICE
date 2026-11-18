@@ -1,0 +1,89 @@
+  0 [-             ] Birla Institute of Technology and Science, Pilani
+  1 [-             ] Department of Electrical and Electronics Engineering
+  2 [-             ] MLEE  |  Course Project Report
+  3 [-             ] [Project Title: concise, specific, and informative]
+  4 [-             ] 
+  5 [-             ] Abstract
+  6 [-             ] Guidance: Write this last. About 120 to 150 words, standalone: state the problem, the ap
+  7 [-             ] [Abstract text. Problem addressed, method used, headline result (with a number), and con
+  8 [-             ] Keywords: [keyword 1], [keyword 2], [keyword 3], [keyword 4]
+  9 [Heading 1     ] 1. Introduction
+ 10 [-             ] Guidance: About 250 to 350 words. Move from the broad context to the specific problem. R
+ 11 [-             ] [Context and motivation: Why is this problem relevant to electrical and electronics engi
+ 12 [-             ] [Problem statement: State precisely what is being predicted, classified, estimated, or o
+ 13 [-             ] [Objectives and contributions: What does this project achieve?]
+ 14 [List Paragraph] [Objective 1: e.g., build a baseline model for ...]
+ 15 [List Paragraph] [Objective 2: e.g., compare at least two approaches on ...]
+ 16 [List Paragraph] [Objective 3: e.g., evaluate using metrics ... and analyse failure cases]
+ 17 [-             ] [Report organisation: Section 2 reviews ..., Section 3 describes ..., Section 4 presents
+ 18 [Heading 1     ] 2. Background
+ 19 [-             ] Guidance: About 300 to 400 words. Cover the theory and the prior work a reader needs in 
+ 20 [Heading 2     ] 2.1 Theoretical Preliminaries
+ 21 [-             ] [Key concepts, equations, and definitions used in the project. Number important equation
+ 22 [-             ] [ Equation placeholder: y = f(x; θ) ]	(1)
+ 23 [Heading 2     ] 2.2 Related Work
+ 24 [-             ] [Summarise 4 to 8 relevant papers, textbooks, or tools in your own words. Group them by 
+ 25 [Heading 2     ] 2.3 Gap and Motivation
+ 26 [-             ] [What do existing approaches miss, and how does your project address, test, or extend th
+ 27 [Heading 1     ] 3. Methodology
+ 28 [-             ] Guidance: About 400 to 500 words plus one system or pipeline figure. Describe what you d
+ 29 [Heading 2     ] 3.1 Overall Approach
+ 30 [-             ] [Describe the end-to-end pipeline in a few sentences and point to Figure 1.]
+ 31 [-             ] Figure 1: [Caption describing the system or pipeline. Captions should make the figure un
+ 32 [Heading 2     ] 3.2 Data and Preprocessing
+ 33 [-             ] [Source of data (public dataset, simulation, measurements), size, train/validation/test 
+ 34 [Heading 2     ] 3.3 Model / Algorithm / Circuit Design
+ 35 [-             ] [Architecture, algorithm, or design choices and their justification. Include the equatio
+ 36 [Heading 2     ] 3.4 Implementation and Experimental Setup
+ 37 [-             ] [Tools, libraries, hardware, and training or simulation settings. Summarise key hyperpar
+ 38 [-             ] Table 1: [Key hyperparameters and experimental settings]
+ 39 [-             ] 
+ 40 [Heading 2     ] 3.5 Evaluation Metrics
+ 41 [-             ] [Define the metrics used (e.g., accuracy, F1, RMSE, SNR, power, latency) and why they su
+ 42 [Heading 1     ] 4. Results and Discussion
+ 43 [-             ] Guidance: About 500 to 600 words with 2 to 4 figures or tables. Present results first, t
+ 44 [Heading 2     ] 4.1 Quantitative Results
+ 45 [-             ] [Summarise the main numbers and refer to Table 2.]
+ 46 [-             ] Table 2: [Performance comparison of the baseline and proposed approach(es)]
+ 47 [-             ] 
+ 48 [Heading 2     ] 4.2 Qualitative Results and Visualisations
+ 49 [-             ] Figure 2: [Caption. State what the reader should notice.]
+ 50 [Heading 2     ] 4.3 Discussion
+ 51 [-             ] [Interpret the results: Why did the method behave this way? How do the findings compare 
+ 52 [List Paragraph] [Strengths: where the approach worked well]
+ 53 [List Paragraph] [Weaknesses: failure cases and their likely causes]
+ 54 [List Paragraph] [Threats to validity: data size, assumptions, simplifications]
+ 55 [Heading 1     ] 5. Conclusion
+ 56 [-             ] Guidance: About 150 to 200 words. Do not introduce new results. Restate the problem and 
+ 57 [-             ] [Summary of what was done and the main finding.]
+ 58 [-             ] [Limitations and future work: two or three concrete next steps.]
+ 59 [Heading 2     ] Acknowledgements (optional)
+ 60 [-             ] [Thank the instructor, teaching assistants, and any resources or compute facilities used
+ 61 [Heading 1     ] References
+ 62 [-             ] Guidance: Use IEEE numeric style, numbered in order of first citation. Every reference m
+ 63 [-             ] [1]	[Journal article] A. Author, B. Author, and C. Author, "Title of the article," Abbre
+ 64 [-             ] [2]	[Conference paper] A. Author and B. Author, "Title of the paper," in Proc. Name of C
+ 65 [-             ] [3]	[Book] A. Author, Title of the Book, xth ed. City, Country: Publisher, Year.
+ 66 [-             ] [4]	[Dataset / online resource] Author or Organisation, "Title," Year. [Online]. Availab
+ 67 [-             ] 
+ 68 [Heading 1     ] Annex A: Team Contributions
+ 69 [-             ] Guidance: Briefly state who did what. Both the report and the poster are evaluated, so l
+ 70 [-             ] 
+ 71 [Heading 1     ] Annex B: Report–Poster Alignment Guide
+ 72 [-             ] Guidance: For students only: delete this annex before submission. The report and the pos
+ 73 [-             ] 
+ 74 [-             ] Final checks before submission:
+ 75 [List Paragraph] Same title, team names, and IDs on both the report and the poster.
+ 76 [List Paragraph] Every number on the poster appears in the report, with identical values.
+ 77 [List Paragraph] All figures are readable, labelled with axes and units, and captioned.
+ 78 [List Paragraph] All guidance boxes and placeholder text are removed from the report.
+ 79 [List Paragraph] The references are consistent and cited in the text.
+--- TABLES ---
+T0: 1x1 rows0=['[ Insert BITS Pilani log']
+T1: 6x2 rows0=['Course', 'MLEE: [full course title']
+T2: 1x1 rows0=['[ Figure placeholder: bl']
+T3: 5x2 rows0=['Parameter', 'Value / Description']
+T4: 4x4 rows0=['Method', '[Metric 1]', '[Metric 2]', '[Metric 3]']
+T5: 1x1 rows0=['[ Figure placeholder: ou']
+T6: 4x3 rows0=['Team member', 'Contribution', 'Report / Poster']
+T7: 8x3 rows0=['Report section', 'Poster block', 'What to carry over']

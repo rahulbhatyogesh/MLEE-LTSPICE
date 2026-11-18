@@ -1,0 +1,98 @@
+{
+  "n_nodes": 4,
+  "ground_node": 0,
+  "image_size": [
+    1600,
+    822
+  ],
+  "warnings": [
+    "no ground symbol detected; using the highest-degree node as the reference node"
+  ],
+  "components": [
+    {
+      "ref": "C1",
+      "cls": "capacitor",
+      "value": "1u",
+      "orientation": "R90",
+      "nodes": [
+        "N001",
+        "0"
+      ],
+      "bbox": [
+        1030.1587301587301,
+        246.8253968253968,
+        1107.936507936508,
+        340.4761904761905
+      ],
+      "conf": 1.0
+    },
+    {
+      "ref": "R1",
+      "cls": "resistor",
+      "value": "1k",
+      "orientation": "R90",
+      "nodes": [
+        "N002",
+        "0"
+      ],
+      "bbox": [
+        585.7142857142857,
+        279.76190476190476,
+        722.2222222222222,
+        344.4444444444444
+      ],
+      "conf": 1.0
+    },
+    {
+      "ref": "C2",
+      "cls": "capacitor",
+      "value": "1u",
+      "orientation": "R0",
+      "nodes": [
+        "N003",
+        "0"
+      ],
+      "bbox": [
+        826.984126984127,
+        402.38095238095235,
+        974.6031746031746,
+        478.57142857142856
+      ],
+      "conf": 1.0
+    },
+    {
+      "ref": "V1",
+      "cls": "source_voltage",
+      "value": "5",
+      "orientation": "R0",
+      "nodes": [
+        "N002",
+        "N003"
+      ],
+      "bbox": [
+        317.46031746031747,
+        401.58730158730157,
+        482.53968253968253,
+        537.3015873015872
+      ],
+      "conf": 1.0
+    },
+    {
+      "ref": "R2",
+      "cls": "resistor",
+      "value": "1k",
+      "orientation": "R0",
+      "nodes": [
+        "N003",
+        "N001"
+      ],
+      "bbox": [
+        1179.3650793650793,
+        424.6031746031746,
+        1269.8412698412699,
+        537.3015873015872
+      ],
+      "conf": 1.0
+    }
+  ]
+}
