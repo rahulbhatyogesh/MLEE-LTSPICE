@@ -27,7 +27,12 @@ def _element_line(graph: CircuitGraph, comp) -> str | None:
         # MOSFETs take D G S B; tie bulk to source.
         return f"{ref} {nodes[0]} {nodes[1]} {nodes[2]} {nodes[2]} {val}"
     if sp.spice_prefix == "S":
-        return f"{ref} {nodes[0]} {nodes[1]} 0 0 {val}"
+        # Four nodes: the two terminals the drawing shows, then the control
+        # pair it does not. `wired_nodes` supplies the latter, defaulting to
+        # ground -- which leaves the switch open, and is why this must be
+        # settable rather than hard-coded.
+        w = [graph.node_name(n) if n >= 0 else "NC" for n in graph.wired_nodes(comp)]
+        return f"{ref} {w[0]} {w[1]} {w[2]} {w[3]} {val}"
     if sp.spice_prefix == "X":
         return f"{ref} {' '.join(nodes)} {val}"
     return None

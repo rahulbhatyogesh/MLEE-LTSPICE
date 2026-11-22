@@ -6,14 +6,64 @@
   "precision_val": 0.8152,
   "recall_val": 0.7523,
   "train_minutes": 172.4,
-  "full_images": 96,
-  "full_exact": 0.3229,
-  "full_bom_f1": 0.9653,
-  "full_sig_f1": 0.4265,
-  "exact": 0.3229,
-  "bom_f1": 0.9653,
-  "sig_f1": 0.4265,
+  "full_images": 72,
+  "full_exact": 0.4444,
+  "full_bom_f1": 0.9993,
+  "full_sig_f1": 0.5392,
+  "exact": 0.4444,
+  "bom_f1": 0.9993,
+  "sig_f1": 0.5392,
   "map50": 0.807,
   "map50_95": 0.5601,
-  "note": "mAP is on the validation drafters; the end-to-end figures use drafter 1, which was a TRAINING drafter -- the only images with reference netlists -- so they flatter the detector."
+  "note": "map50_val=0.807 is measured on the validation drafters used to pick the best epoch; map50_test=0.691 is the honest held-out number on 4 drafters never seen in training. The end-to-end figures use drafter 1, which WAS a training drafter -- the only one with reference netlists -- so those flatter the detector.",
+  "map50_test": 0.6912,
+  "map50_95_test": 0.4684,
+  "test_precision": 0.721,
+  "test_recall": 0.712,
+  "test_images": 310,
+  "test_instances": 11766,
+  "test_drafters": [
+    "drafter_29",
+    "drafter_30",
+    "drafter_31",
+    "drafter_32"
+  ],
+  "weights": "runs/yolov8s-2/weights/best.pt",
+  "images": 72,
+  "unscoped": {
+    "images": 96,
+    "exact": 0.3854,
+    "bom_f1": 0.9653,
+    "sig_f1": 0.4984,
+    "circuits": [
+      "C1",
+      "C10",
+      "C11",
+      "C12",
+      "C2",
+      "C3",
+      "C4",
+      "C5",
+      "C6",
+      "C7",
+      "C8",
+      "C9"
+    ]
+  },
+  "excluded": {
+    "images": 24,
+    "exact": 0.2083,
+    "bom_f1": 0.8632,
+    "sig_f1": 0.3763,
+    "circuits": [
+      "C1",
+      "C6",
+      "C7"
+    ]
+  },
+  "out_of_scope_circuits": [
+    "C1",
+    "C6",
+    "C7"
+  ]
 }

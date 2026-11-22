@@ -61,6 +61,7 @@ def binarize(
     method: str = "flatfield",
     block: int | None = None,
     c: int = 10,
+    unet_thr: float | None = None,
 ) -> np.ndarray:
     """Return a uint8 mask where 255 = ink stroke, 0 = paper.
 
@@ -95,7 +96,10 @@ def binarize(
         # so it skips the morphological clean-up the thresholds need.
         from .segment import segment_strokes
 
-        return segment_strokes(bgr if bgr.ndim == 3 else cv2.cvtColor(gray, cv2.COLOR_GRAY2BGR))
+        return segment_strokes(
+            bgr if bgr.ndim == 3 else cv2.cvtColor(gray, cv2.COLOR_GRAY2BGR),
+            threshold=unet_thr,
+        )
     elif method == "flatfield":
         k = max(3, (min(gray.shape[:2]) // 20) | 1)
         bg = cv2.medianBlur(gray, min(k, 151) | 1)
@@ -253,6 +257,119 @@ def _segment_hits_box(p, q, boxes) -> bool:
     return False
 
 
+def _ring_label_stats(labels: np.ndarray, box, k: int) -> dict:
+    """label -> (pixel_count, mean_x, mean_y) within the annulus outside ``box``."""
+    x1, y1, x2, y2 = box
+    ox1, oy1, ox2, oy2 = _clip_rect((x1 - k, y1 - k, x2 + k, y2 + k), labels.shape)
+    if ox2 <= ox1 or oy2 <= oy1:
+        return {}
+    patch = labels[oy1:oy2, ox1:ox2].copy()
+    ix1, iy1, ix2, iy2 = _clip_rect(box, labels.shape)
+    patch[
+        max(0, iy1 - oy1) : max(0, iy2 - oy1),
+        max(0, ix1 - ox1) : max(0, ix2 - ox1),
+    ] = 0
+    ys, xs = np.nonzero(patch)
+    if len(xs) == 0:
+        return {}
+    vals = patch[ys, xs]
+    out: dict = {}
+    for lab in np.unique(vals):
+        sel = vals == lab
+        out[int(lab)] = (
+            int(sel.sum()),
+            float(xs[sel].mean() + ox1),
+            float(ys[sel].mean() + oy1),
+        )
+    return out
+
+
+def restore_branch_points(
+    labels: np.ndarray,
+    uf: UnionFind,
+    detections: list,
+    *,
+    max_sep_frac: float = 0.45,
+    max_bearing_deg: float = 40.0,
+) -> int:
+    """Rebuild the branch points that erasing a symbol box deleted.
+
+    A symbol box is a rectangle; a terminal sits on its edge.  So when a wire
+    *branches at a terminal* -- a transistor's emitter feeding both a resistor
+    below it and a rail to its right -- the branch point itself lies inside the
+    box, and erasing the box splits one electrical node into two fragments that
+    leave through adjacent edges.  :func:`reconnect_endpoints` cannot repair
+    this: the two stubs meet at a right angle, so the collinearity evidence it
+    relies on is absent, and the gap crosses an erased box, which it refuses on
+    principle.
+
+    The surplus is what gives the break away.  A component has exactly
+    ``n_ports`` terminals, so if more than that many distinct nodes touch its
+    ring, the extra ones can only be pieces of a terminal the box cut up.  We
+    therefore merge the closest pair of ring contacts, and keep merging, until
+    the count is back down to ``n_ports`` -- never below it, so two genuine
+    terminals can never be shorted together.  A merge additionally has to look
+    like one terminal rather than two: the contacts must be close relative to
+    the symbol (``max_sep_frac``) and at nearly the same bearing from its
+    centre (``max_bearing_deg``), which is what separates a clipped branch from
+    a wire that merely passes nearby.
+
+    Returns the number of merges made.
+    """
+    from .classes import ERASE_BEFORE_WIRES, n_ports
+
+    joins = 0
+    for d in detections:
+        if d.cls not in ERASE_BEFORE_WIRES:
+            continue
+        floor = n_ports(d.cls) if d.cls in ERASE_BEFORE_WIRES else 1
+        floor = max(1, floor)
+        k = max(4, int(round(0.12 * max(d.w, d.h))))
+        stats = _ring_label_stats(labels, d.box, k)
+        # Collapse to one entry per *node*: fragments already merged by a
+        # junction or a crossover are one terminal, not two.
+        groups: dict = {}
+        for lab, (cnt, cx, cy) in stats.items():
+            if cnt < 3:
+                continue
+            r = uf.find(int(lab))
+            c0, sx, sy = groups.get(r, (0, 0.0, 0.0))
+            groups[r] = (c0 + cnt, sx + cx * cnt, sy + cy * cnt)
+        pts = {r: (c, sx / c, sy / c) for r, (c, sx, sy) in groups.items()}
+        if len(pts) <= floor:
+            continue
+
+        bcx, bcy = (d.x1 + d.x2) / 2.0, (d.y1 + d.y2) / 2.0
+        max_sep = max_sep_frac * max(1.0, min(d.w, d.h))
+        while len(pts) > floor:
+            best, best_dist = None, max_sep
+            keys = list(pts)
+            for i, a in enumerate(keys):
+                for b in keys[i + 1 :]:
+                    _ca, ax, ay = pts[a]
+                    _cb, bx, by = pts[b]
+                    dist = float(np.hypot(ax - bx, ay - by))
+                    if dist >= best_dist:
+                        continue
+                    aa = np.arctan2(ay - bcy, ax - bcx)
+                    ab = np.arctan2(by - bcy, bx - bcx)
+                    sep = abs((aa - ab + np.pi) % (2 * np.pi) - np.pi)
+                    if np.degrees(sep) > max_bearing_deg:
+                        continue
+                    best, best_dist = (a, b), dist
+            if best is None:
+                break
+            a, b = best
+            ca, ax, ay = pts.pop(a)
+            cb, bx, by = pts.pop(b)
+            uf.union(a, b)
+            root = uf.find(a)
+            n = ca + cb
+            pts[root] = (n, (ax * ca + bx * cb) / n, (ay * ca + by * cb) / n)
+            joins += 1
+    return joins
+
+
 def reconnect_endpoints(
     skel: np.ndarray,
     labels: np.ndarray,
@@ -261,6 +378,8 @@ def reconnect_endpoints(
     *,
     max_gap: float = 18.0,
     min_cos: float = 0.72,
+    collinear_cos: float = 0.95,
+    collinear_gap_mult: float = 4.0,
 ) -> int:
     """Rejoin strokes that thresholding snapped in two.
 
@@ -281,7 +400,9 @@ def reconnect_endpoints(
       roughly anti-parallel, hence ``min_cos``), so a T-shape or two wires
       passing side by side is rejected, and
     - the gap does not cross an erased symbol box -- that gap is *deliberate*,
-      and bridging it would short out the component.
+      and bridging it would short out the component.  (A wire that *branches*
+      at a terminal also has its branch point inside the box; that break is
+      repaired by :func:`restore_branch_points`, not here.)
 
     Returns the number of joins made.
     """
@@ -291,6 +412,7 @@ def reconnect_endpoints(
     dirs = np.stack([_endpoint_direction(skel, p) for p in pts])
     labs = np.array([labels[p[1], p[0]] for p in pts])
 
+    far_gap = max_gap * collinear_gap_mult
     order = np.argsort(pts[:, 0])
     joins = 0
     used: set = set()
@@ -304,16 +426,25 @@ def reconnect_endpoints(
             if labs[j] == 0 or j in used:
                 continue
             d = pts[j] - pts[i]
-            if d[0] > max_gap:
+            if d[0] > far_gap:
                 break                       # sorted by x: nothing closer ahead
             dist = float(np.linalg.norm(d))
-            if dist < 1e-6 or dist > max_gap:
+            if dist < 1e-6 or dist > far_gap:
                 continue
             if uf.find(int(labs[i])) == uf.find(int(labs[j])):
                 continue
             u = d / dist
             # Each end must point towards the other.
             score = min(float(dirs[i] @ u), float(dirs[j] @ -u))
+            # A long supply rail broken by a light pencil stretch leaves a gap
+            # far wider than max_gap, but its two halves are near-perfectly
+            # collinear.  Collinearity is the stronger evidence, so allow a
+            # much larger gap when the alignment is almost exact.  Those long
+            # rails carry the most pins, so one unrepaired break costs the
+            # whole circuit.
+            limit = far_gap if score >= collinear_cos else max_gap
+            if dist > limit:
+                continue
             if score > best_score and not _segment_hits_box(pts[i], pts[j], erased_boxes):
                 best, best_score = j, score
         if best is not None:
@@ -396,11 +527,13 @@ def build_node_map(
     drop_outside: str = "none",
     thin_q: float | None = 50.0,
     reconnect_px: float = 24.0,
+    restore_branches: bool = True,
+    unet_thr: float | None = None,
     binary: np.ndarray | None = None,
 ) -> NodeMap:
     """Trace wires and resolve them into electrical nodes."""
     if binary is None:
-        binary = binarize(bgr, method=method)
+        binary = binarize(bgr, method=method, unet_thr=unet_thr)
     # 0. Strip page ruling and margin furniture before anything else.
     #    The thickness filter exists to remove printed ruling a threshold
     #    cannot; the learned segmenter already excludes it, and applying the
@@ -488,9 +621,15 @@ def build_node_map(
                 used.add(la)
                 used.add(best)
 
-    # 4c. Rejoin strokes that thresholding snapped in two.  Runs last so the
-    #     explicit junction/crossover annotations take priority and this only
-    #     repairs what is still broken.
+    # 4c. Put back the branch points that erasing a symbol box removed.  Runs
+    #     after the junction and crossover annotations, so a node they already
+    #     tied together counts once, not twice.
+    if restore_branches:
+        restore_branch_points(labels, uf, detections)
+
+    # 4d. Rejoin strokes that thresholding snapped in two.  Runs last so the
+    #     explicit annotations and the branch repair take priority and this
+    #     only repairs what is still broken.
     if reconnect_px:
         erased = [
             _clip_rect(d.box, work.shape)

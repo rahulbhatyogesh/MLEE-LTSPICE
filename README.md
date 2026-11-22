@@ -185,12 +185,13 @@ src/circuit2spice/
   handwriting inside them is not recognised; values default to R=1k, C=1u, L=1m
   and are editable with `--value`. Every reference paper lists this as future
   work too.
-- **Pin order is positional, not electrical.** For 3-terminal devices the
-  collector/base/emitter assignment follows image position, so a transistor may
-  be wired with its terminals permuted. CGHD ships rotation annotations that
-  would settle this.
-- **Polarity is not recovered.** An axis-aligned box does not say which way a
-  diode or source points.
+- **Source polarity is not recovered.** An axis-aligned box does not say which
+  way a voltage source points, and nothing reads it yet; `--flip V1` reverses a
+  part's terminals by hand. Transistor pin order and diode polarity *are* read
+  from the drawing now -- the first from the bar and the arrowhead
+  (`pins.py`), the second by a small model trained on CGHD's rotation
+  annotations (`diode_net.py`) -- but both abstain rather than guess when the
+  ink does not say, so the override still matters.
 - **Layout is functional, not draughtsman-quality.** Components keep their
   relative positions from the photograph.
 - ICs, logic gates, transformers and similar (~4% of boxes) are detected as

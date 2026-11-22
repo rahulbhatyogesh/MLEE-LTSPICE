@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.27 (MiKTeX 25.3) (preloaded format=pdflatex 2025.4.22)  15 NOV 2026 05:54
+This is pdfTeX, Version 3.141592653-2.6-1.40.27 (MiKTeX 25.3) (preloaded format=pdflatex 2025.4.22)  20 NOV 2026 20:58
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -798,12 +798,12 @@ Package: enumitem 2025/02/06 v3.11 Customized lists
 \enitdp@description=\count321
 )
 LaTeX Font Info:    Trying to load font information for T1+phv on input line 13
-9.
+8.
 (C:\Users\rahul\AppData\Local\Programs\MiKTeX\tex/latex/psnfss\t1phv.fd
 File: t1phv.fd 2020/03/25 scalable font definitions for T1/phv.
 )
 LaTeX Font Info:    Font shape `T1/phv/m/n' will be
-(Font)              scaled to size 23.63593pt on input line 139.
+(Font)              scaled to size 23.63593pt on input line 138.
 
 (C:\Users\rahul\AppData\Local\Programs\MiKTeX\tex/latex/l3backend\l3backend-pdf
 tex.def
@@ -812,26 +812,26 @@ File: l3backend-pdftex.def 2025-03-14 L3 backend support: PDF output (pdfTeX)
 )
 
 LaTeX Warning: Unused global option(s):
-    [30pt,margin=0mm,innermargin=15mm,blockverticalspace=15mm,colspace=15mm,sub
+    [30pt,margin=0mm,innermargin=15mm,blockverticalspace=10mm,colspace=15mm,sub
 colspace=8mm].
 
 (MLEE_Poster.aux)
 \openout1 = `MLEE_Poster.aux'.
 
-LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 139.
-LaTeX Font Info:    ... okay on input line 139.
-LaTeX Font Info:    Checking defaults for OMS/cmsy/m/n on input line 139.
-LaTeX Font Info:    ... okay on input line 139.
-LaTeX Font Info:    Checking defaults for OT1/cmr/m/n on input line 139.
-LaTeX Font Info:    ... okay on input line 139.
-LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 139.
-LaTeX Font Info:    ... okay on input line 139.
-LaTeX Font Info:    Checking defaults for TS1/cmr/m/n on input line 139.
-LaTeX Font Info:    ... okay on input line 139.
-LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 139.
-LaTeX Font Info:    ... okay on input line 139.
-LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 139.
-LaTeX Font Info:    ... okay on input line 139.
+LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 138.
+LaTeX Font Info:    ... okay on input line 138.
+LaTeX Font Info:    Checking defaults for OMS/cmsy/m/n on input line 138.
+LaTeX Font Info:    ... okay on input line 138.
+LaTeX Font Info:    Checking defaults for OT1/cmr/m/n on input line 138.
+LaTeX Font Info:    ... okay on input line 138.
+LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 138.
+LaTeX Font Info:    ... okay on input line 138.
+LaTeX Font Info:    Checking defaults for TS1/cmr/m/n on input line 138.
+LaTeX Font Info:    ... okay on input line 138.
+LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 138.
+LaTeX Font Info:    ... okay on input line 138.
+LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 138.
+LaTeX Font Info:    ... okay on input line 138.
 
 (C:\Users\rahul\AppData\Local\Programs\MiKTeX\tex/context/base/mkii\supp-pdf.mk
 ii
@@ -893,15 +893,15 @@ File: epstopdf-sys.cfg 2021/03/18 v2.0 Configuration of epstopdf for MiKTeX
 * (1in=72.27pt=25.4mm, 1cm=28.453pt)
 
 LaTeX Font Info:    Font shape `T1/phv/m/n' will be
-(Font)              scaled to size 16.41594pt on input line 139.
+(Font)              scaled to size 16.41594pt on input line 138.
 LaTeX Font Info:    Font shape `T1/phv/b/n' will be
-(Font)              scaled to size 16.41594pt on input line 139.
-LaTeX Font Info:    Trying to load font information for U+msa on input line 139
+(Font)              scaled to size 16.41594pt on input line 138.
+LaTeX Font Info:    Trying to load font information for U+msa on input line 138
 .
 (C:\Users\rahul\AppData\Local\Programs\MiKTeX\tex/latex/amsfonts\umsa.fd
 File: umsa.fd 2013/01/14 v3.01 AMS symbols A
 )
-LaTeX Font Info:    Trying to load font information for U+msb on input line 139
+LaTeX Font Info:    Trying to load font information for U+msb on input line 138
 .
 
 (C:\Users\rahul\AppData\Local\Programs\MiKTeX\tex/latex/amsfonts\umsb.fd
@@ -913,110 +913,109 @@ Missing character: There is no 1 in font nullfont!
 <bits_logo.png, id=28, 1284.8pt x 1284.8pt>
 File: bits_logo.png Graphic file (type png)
 <use bits_logo.png>
-Package pdftex.def Info: bits_logo.png  used on input line 141.
+Package pdftex.def Info: bits_logo.png  used on input line 140.
 (pdftex.def)             Requested size: 199.16154pt x 199.16154pt.
 LaTeX Font Info:    Font shape `T1/phv/b/n' will be
-(Font)              scaled to size 23.63593pt on input line 141.
+(Font)              scaled to size 23.63593pt on input line 140.
 LaTeX Font Info:    Font shape `T1/phv/b/n' will be
-(Font)              scaled to size 51.29984pt on input line 141.
+(Font)              scaled to size 51.29984pt on input line 140.
 LaTeX Font Info:    Font shape `T1/phv/m/n' will be
-(Font)              scaled to size 34.19989pt on input line 141.
+(Font)              scaled to size 34.19989pt on input line 140.
 LaTeX Font Info:    Trying to load font information for TS1+phv on input line 1
-41.
+40.
 (C:\Users\rahul\AppData\Local\Programs\MiKTeX\tex/latex/psnfss\ts1phv.fd
 File: ts1phv.fd 2020/03/25 scalable font definitions for TS1/phv.
 )
 LaTeX Font Info:    Font shape `TS1/phv/m/n' will be
-(Font)              scaled to size 34.19989pt on input line 141.
+(Font)              scaled to size 34.19989pt on input line 140.
 LaTeX Font Info:    Font shape `T1/phv/m/n' will be
-(Font)              scaled to size 26.59991pt on input line 141.
+(Font)              scaled to size 26.59991pt on input line 140.
 LaTeX Font Info:    Font shape `TS1/phv/m/n' will be
-(Font)              scaled to size 26.59991pt on input line 141.
+(Font)              scaled to size 26.59991pt on input line 140.
 File: bits_logo.png Graphic file (type png)
 <use bits_logo.png>
-Package pdftex.def Info: bits_logo.png  used on input line 141.
+Package pdftex.def Info: bits_logo.png  used on input line 140.
 (pdftex.def)             Requested size: 199.16154pt x 199.16154pt.
 LaTeX Font Info:    Font shape `T1/phv/b/n' will be
-(Font)              scaled to size 40.84987pt on input line 156.
+(Font)              scaled to size 40.84987pt on input line 155.
 LaTeX Font Info:    Font shape `T1/phv/m/n' will be
-(Font)              scaled to size 28.3669pt on input line 156.
+(Font)              scaled to size 28.3669pt on input line 155.
 LaTeX Font Info:    Font shape `T1/phv/m/it' in size <29.86> not available
-(Font)              Font shape `T1/phv/m/sl' tried instead on input line 156.
+(Font)              Font shape `T1/phv/m/sl' tried instead on input line 155.
 LaTeX Font Info:    Font shape `T1/phv/m/sl' will be
-(Font)              scaled to size 28.3669pt on input line 156.
+(Font)              scaled to size 28.3669pt on input line 155.
 LaTeX Font Info:    Font shape `T1/phv/b/n' will be
-(Font)              scaled to size 28.3669pt on input line 156.
+(Font)              scaled to size 28.3669pt on input line 155.
 LaTeX Font Info:    Font shape `TS1/phv/m/n' will be
-(Font)              scaled to size 28.3669pt on input line 173.
+(Font)              scaled to size 28.3669pt on input line 172.
 
-Underfull \hbox (badness 1590) in paragraph at lines 173--173
+Underfull \hbox (badness 1590) in paragraph at lines 172--172
 []\T1/phv/m/n/29.86 Evaluate the out-put \T1/phv/b/n/29.86 as a cir-cuit\T1/phv
 /m/n/29.86 , by graph iso-mor-phism against ref-er-ence
  []
 
 LaTeX Font Info:    Font shape `T1/phv/m/n' will be
-(Font)              scaled to size 19.70294pt on input line 190.
+(Font)              scaled to size 19.70294pt on input line 189.
 LaTeX Font Info:    Font shape `T1/phv/m/n' will be
-(Font)              scaled to size 13.67995pt on input line 190.
+(Font)              scaled to size 13.67995pt on input line 189.
 <fig_method.png, id=30, 686.565pt x 186.9384pt>
 File: fig_method.png Graphic file (type png)
 <use fig_method.png>
-Package pdftex.def Info: fig_method.png  used on input line 207.
+Package pdftex.def Info: fig_method.png  used on input line 212.
 (pdftex.def)             Requested size: 1000.21849pt x 272.34018pt.
 LaTeX Font Info:    Font shape `T1/phv/m/it' in size <20.74> not available
-(Font)              Font shape `T1/phv/m/sl' tried instead on input line 207.
+(Font)              Font shape `T1/phv/m/sl' tried instead on input line 212.
 LaTeX Font Info:    Font shape `T1/phv/m/sl' will be
-(Font)              scaled to size 19.70294pt on input line 207.
+(Font)              scaled to size 19.70294pt on input line 212.
 LaTeX Font Info:    Trying to load font information for T1+aett on input line 2
-07.
+12.
 (C:\Users\rahul\AppData\Local\Programs\MiKTeX\tex/latex/ae\t1aett.fd
 File: t1aett.fd 1997/11/16 Font definitions for T1/aett.
 )
-<fig_result2.png, id=31, 629.9535pt x 290.0436pt>
-File: fig_result2.png Graphic file (type png)
-<use fig_result2.png>
-Package pdftex.def Info: fig_result2.png  used on input line 258.
-(pdftex.def)             Requested size: 494.38963pt x 227.62718pt.
+<fig_qualitative.png, id=31, 742.4538pt x 246.4407pt>
+File: fig_qualitative.png Graphic file (type png)
+<use fig_qualitative.png>
+Package pdftex.def Info: fig_qualitative.png  used on input line 275.
+(pdftex.def)             Requested size: 471.45293pt x 156.4881pt.
 <fig_result3.png, id=32, 528.2937pt x 274.626pt>
 File: fig_result3.png Graphic file (type png)
 <use fig_result3.png>
-Package pdftex.def Info: fig_result3.png  used on input line 258.
-(pdftex.def)             Requested size: 383.13614pt x 199.16788pt.
+Package pdftex.def Info: fig_result3.png  used on input line 275.
+(pdftex.def)             Requested size: 284.61334pt x 147.95221pt.
 LaTeX Font Info:    Font shape `T1/phv/b/it' in size <20.74> not available
-(Font)              Font shape `T1/phv/b/sl' tried instead on input line 258.
+(Font)              Font shape `T1/phv/b/sl' tried instead on input line 275.
 LaTeX Font Info:    Font shape `T1/phv/b/sl' will be
-(Font)              scaled to size 19.70294pt on input line 258.
-
-Underfull \hbox (badness 10000) in paragraph at lines 315--315
-[]\T1/phv/m/n/20.74 J. Bayer \T1/phv/m/sl/20.74 et al.\T1/phv/m/n/20.74 , ``A p
-ub-lic ground-truth dataset for
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 315--315
-\T1/phv/m/n/20.74 hand-writ-ten cir-cuit di-a-gram im-ages,'' Zen-odo, 2025,
- []
-
+(Font)              scaled to size 19.70294pt on input line 275.
+LaTeX Font Info:    Font shape `T1/phv/m/it' in size <17.28> not available
+(Font)              Font shape `T1/phv/m/sl' tried instead on input line 336.
+LaTeX Font Info:    Font shape `T1/phv/m/sl' will be
+(Font)              scaled to size 16.41594pt on input line 336.
+<qr_code.png, id=33, 1027.84pt x 1027.84pt>
+File: qr_code.png Graphic file (type png)
+<use qr_code.png>
+Package pdftex.def Info: qr_code.png  used on input line 351.
+(pdftex.def)             Requested size: 85.35826pt x 85.3499pt.
 
 
 [1
 
 {C:/Users/rahul/AppData/Local/MiKTeX/fonts/map/pdftex/pdftex.map}{C:/Users/rahu
 l/AppData/Local/Programs/MiKTeX/fonts/enc/dvips/base/8r.enc} <./bits_logo.png> 
-<./fig_method.png> <./fig_result2.png> <./fig_result3.png>] (MLEE_Poster.aux)
+<./fig_method.png> <./fig_qualitative.png> <./fig_result3.png> <./qr_code.png>]
+ (MLEE_Poster.aux)
  ***********
 LaTeX2e <2024-11-01> patch level 2
 L3 programming layer <2025-03-26>
  ***********
  ) 
 Here is how much of TeX's memory you used:
- 19312 strings out of 469959
- 419524 string characters out of 5469834
- 873703 words of memory out of 5000000
- 45685 multiletter control sequences out of 15000+600000
- 689312 words of font info for 130 fonts, out of 8000000 for 9000
+ 19321 strings out of 469959
+ 419705 string characters out of 5469834
+ 878706 words of memory out of 5000000
+ 45692 multiletter control sequences out of 15000+600000
+ 693482 words of font info for 133 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
- 117i,11n,121p,471b,1475s stack positions out of 10000i,1000n,20000p,200000b,200000s
+ 117i,11n,121p,471b,1022s stack positions out of 10000i,1000n,20000p,200000b,200000s
 <C:/Users/rahul/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/
 cmb10.pfb><C:/Users/rahul/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsf
 onts/cm/cmmi12.pfb><C:/Users/rahul/AppData/Local/Programs/MiKTeX/fonts/type1/pu
@@ -1028,9 +1027,9 @@ ocal/Programs/MiKTeX/fonts/type1/urw/helvetic/uhvb8a.pfb><C:/Users/rahul/AppDat
 a/Local/Programs/MiKTeX/fonts/type1/urw/helvetic/uhvbo8a.pfb><C:/Users/rahul/Ap
 pData/Local/Programs/MiKTeX/fonts/type1/urw/helvetic/uhvr8a.pfb><C:/Users/rahul
 /AppData/Local/Programs/MiKTeX/fonts/type1/urw/helvetic/uhvro8a.pfb>
-Output written on MLEE_Poster.pdf (1 page, 666358 bytes).
+Output written on MLEE_Poster.pdf (1 page, 1271299 bytes).
 PDF statistics:
- 93 PDF objects out of 1000 (max. 8388607)
+ 95 PDF objects out of 1000 (max. 8388607)
  0 named destinations out of 1000 (max. 500000)
- 129 words of extra memory for PDF output out of 10000 (max. 10000000)
+ 134 words of extra memory for PDF output out of 10000 (max. 10000000)
 

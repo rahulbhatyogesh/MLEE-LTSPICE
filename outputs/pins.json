@@ -1,0 +1,175 @@
+{
+  "rows": [
+    {
+      "stem": "C2_D1_P1",
+      "circuit": "C2",
+      "correct": 1,
+      "scored": 1,
+      "exact": true
+    },
+    {
+      "stem": "C2_D1_P2",
+      "circuit": "C2",
+      "correct": 1,
+      "scored": 1,
+      "exact": true
+    },
+    {
+      "stem": "C2_D1_P3",
+      "circuit": "C2",
+      "correct": 1,
+      "scored": 1,
+      "exact": true
+    },
+    {
+      "stem": "C2_D1_P4",
+      "circuit": "C2",
+      "correct": 1,
+      "scored": 1,
+      "exact": true
+    },
+    {
+      "stem": "C2_D2_P1",
+      "circuit": "C2",
+      "correct": 1,
+      "scored": 1,
+      "exact": true
+    },
+    {
+      "stem": "C2_D2_P2",
+      "circuit": "C2",
+      "correct": 0,
+      "scored": 0,
+      "exact": false
+    },
+    {
+      "stem": "C2_D2_P3",
+      "circuit": "C2",
+      "correct": 1,
+      "scored": 1,
+      "exact": true
+    },
+    {
+      "stem": "C2_D2_P4",
+      "circuit": "C2",
+      "correct": 1,
+      "scored": 1,
+      "exact": true
+    },
+    {
+      "stem": "C8_D1_P1",
+      "circuit": "C8",
+      "correct": 0,
+      "scored": 0,
+      "exact": false
+    },
+    {
+      "stem": "C8_D1_P2",
+      "circuit": "C8",
+      "correct": 0,
+      "scored": 0,
+      "exact": false
+    },
+    {
+      "stem": "C8_D1_P3",
+      "circuit": "C8",
+      "correct": 0,
+      "scored": 0,
+      "exact": false
+    },
+    {
+      "stem": "C8_D1_P4",
+      "circuit": "C8",
+      "correct": 0,
+      "scored": 0,
+      "exact": false
+    },
+    {
+      "stem": "C8_D2_P1",
+      "circuit": "C8",
+      "correct": 2,
+      "scored": 2,
+      "exact": true
+    },
+    {
+      "stem": "C8_D2_P2",
+      "circuit": "C8",
+      "correct": 2,
+      "scored": 2,
+      "exact": true
+    },
+    {
+      "stem": "C8_D2_P3",
+      "circuit": "C8",
+      "correct": 2,
+      "scored": 2,
+      "exact": true
+    },
+    {
+      "stem": "C8_D2_P4",
+      "circuit": "C8",
+      "correct": 2,
+      "scored": 2,
+      "exact": true
+    }
+  ],
+  "arrowhead/gt-boxes": {
+    "images_with_multipin_parts": 16,
+    "pins_scored": 15,
+    "pins_correct": 15,
+    "accuracy": 1.0,
+    "per_circuit": {
+      "C2": {
+        "correct": 7,
+        "scored": 7
+      },
+      "C8": {
+        "correct": 8,
+        "scored": 8
+      }
+    },
+    "note": "only images whose topology already matches can be scored; without an isomorphism there is no net correspondence"
+  },
+  "positional/gt-boxes": {
+    "images_with_multipin_parts": 24,
+    "pins_scored": 15,
+    "pins_correct": 1,
+    "accuracy": 0.0667,
+    "per_circuit": {
+      "C2": {
+        "correct": 0,
+        "scored": 7
+      },
+      "C8": {
+        "correct": 1,
+        "scored": 8
+      },
+      "C12": {
+        "correct": 0,
+        "scored": 0
+      }
+    },
+    "note": "only images whose topology already matches can be scored; without an isomorphism there is no net correspondence"
+  },
+  "arrowhead/full-system": {
+    "images_with_multipin_parts": 24,
+    "pins_scored": 15,
+    "pins_correct": 15,
+    "accuracy": 1.0,
+    "per_circuit": {
+      "C2": {
+        "correct": 7,
+        "scored": 7
+      },
+      "C8": {
+        "correct": 8,
+        "scored": 8
+      },
+      "C12": {
+        "correct": 0,
+        "scored": 0
+      }
+    },
+    "note": "only images whose topology already matches can be scored; without an isomorphism there is no net correspondence"
+  }
+}

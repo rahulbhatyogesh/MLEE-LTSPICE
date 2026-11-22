@@ -61,6 +61,13 @@ def _load(path: str):
     return json.loads(p.read_text()) if p.exists() else None
 
 
+def _load_npz(path: str):
+    import numpy as np
+
+    p = Path(path)
+    return np.load(p, allow_pickle=True) if p.exists() else None
+
+
 # --------------------------------------------------------------- 1. pipeline
 
 def fig_method() -> Path:
@@ -106,11 +113,12 @@ ABLATION_LABELS = {
     "adaptive|none|thinNone": "Adaptive\nthreshold\n(prior work)",
     "flatfield|none|thinNone": "Flat-field\nthreshold",
     "flatfield|mask|thin50.0": "+ thickness\nfilter",
+    "unet|none|thinNone": "Learned\nsegmentation\n(this work)",
 }
 
 
 def fig_ablation() -> Path | None:
-    """What each pre-processing step buys, on the 96 annotated photographs."""
+    """What each pre-processing step buys, on the 72 in-scope photographs."""
     data = _load("outputs/ablation_preproc.json")
     if not data:
         print("  (skipping ablation: outputs/ablation_preproc.json missing)")
@@ -136,7 +144,7 @@ def fig_ablation() -> Path | None:
                     ha="center", va="bottom", fontsize=9.5,
                     fontweight="bold", color=INK)
     ax.set_xticks(x), ax.set_xticklabels(labels, fontsize=9.5)
-    ax.set_ylabel("Score on 96 photographs")
+    ax.set_ylabel("Score on 72 in-scope photographs")
     ax.set_ylim(0, max(max(exact), max(sig)) * 1.32)
     ax.legend(frameon=False, loc="upper left", fontsize=9.5)
     ax.set_title("Removing printed page ruling is what unlocks topology",
@@ -187,7 +195,10 @@ def fig_stage_summary() -> Path | None:
     out = _save(fig, "fig_result2.png")
 
     # Second panel: does the trained detector cost anything versus perfect boxes?
-    det = _load("outputs/detector.json")
+    # The full-system bars must come from the *same* segmentation as the
+    # ground-truth ones, or the chart blames the learned/thresholding gap on
+    # the detector. `detector.json` holds the older thresholding run.
+    det = (_load("outputs/benchmark_unet_full.json") or {}).get("full-system")         or _load("outputs/detector.json")
     if det:
         # Wide and narrow-barred: at 14pt the value labels of adjacent bars
         # collide if the pairs sit any closer together.
@@ -209,7 +220,8 @@ def fig_stage_summary() -> Path | None:
                         fontweight="bold", color=INK)
         ax.set_xticks(x)
         ax.set_xticklabels(labels, fontsize=13)
-        ax.set_ylabel("Score on 96 photographs", fontsize=13)
+        ax.set_ylabel(f"Score on {gt.get('images', 64)} in-scope photographs",
+                      fontsize=13)
         ax.tick_params(axis="y", labelsize=12)
         ax.set_ylim(0, 1.25)
         ax.legend(frameon=False, loc="upper right", fontsize=12.5)
@@ -254,6 +266,27 @@ def fig_confusion() -> Path | None:
 
 # ---------------------------------------------------------- 5. qualitative
 
+def _nodes_on_white(nm):
+    """The node map with the background white, not black.
+
+    `colorize` paints node 0 black, which is right on screen and wrong in
+    print: the panel becomes a dark rectangle with a few thin traces in it and
+    reads as an empty box. Inverting the background keeps one colour per net
+    and puts the ink where a reader expects it.
+    """
+    import cv2
+    import numpy as np
+
+    from .wires import colorize
+
+    out = colorize(nm)
+    out[nm.labels == 0] = 255
+    # Darken the traces a little so they hold up against white.
+    ink = nm.labels > 0
+    out[ink] = (out[ink].astype(np.int32) * 3 // 4).astype(np.uint8)
+    return cv2.cvtColor(out, cv2.COLOR_BGR2RGB)
+
+
 def fig_qualitative(stem: str = "C11_D1_P1") -> Path | None:
     """Photo -> detections -> electrical nodes, side by side."""
     import cv2
@@ -275,7 +308,7 @@ def fig_qualitative(stem: str = "C11_D1_P1") -> Path | None:
 
     panels = [(cv2.cvtColor(img, cv2.COLOR_BGR2RGB), "(a) photograph"),
               (cv2.cvtColor(draw(img, dets), cv2.COLOR_BGR2RGB), "(b) detected symbols"),
-              (cv2.cvtColor(colorize(nm), cv2.COLOR_BGR2RGB), "(c) electrical nodes")]
+              (_nodes_on_white(nm), "(c) electrical nodes")]
     fig, axes = plt.subplots(1, 3, figsize=(13, 5.0))
     for ax, (im, cap) in zip(axes, panels):
         ax.imshow(im), ax.axis("off"), ax.grid(False)
@@ -337,6 +370,61 @@ def fig_schematic(asc_path: str = "outputs/demo/C11_D1_P1.asc") -> Path | None:
 
 # ------------------------------------------------------------------ tables
 
+# ------------------------------------------------------ 7. diode orientation
+
+def fig_diode(name: str = "fig_diode.png") -> Path | None:
+    """Out-of-fold diode readings: the easy ones and the worst ones.
+
+    Drawn from ``outputs/diode_orient.oof.npz``, which holds the prediction
+    for every diode made by a model that never saw that diode's drafter. The
+    bottom row is the tail, sorted by angular error, because a panel of only
+    successes says nothing about a model that is right 99% of the time.
+
+    The tail is worth looking at rather than quoting. Every disagreement in it
+    is close to a full 180 degrees -- the model does not drift, it reverses --
+    and on inspection all six are diodes whose *annotation* points at the bar
+    instead of the triangle. CGHD's README says the rotation annotations are
+    work in progress; this is what that looks like.
+    """
+    import math
+
+    import numpy as np
+
+    d = _load_npz("outputs/diode_orient.oof.npz")
+    crops = _load_npz("data/diode_orient.npz")
+    if d is None or crops is None:
+        return None
+    x = crops["crops"]
+    ang, theta, who = d["angle"], d["theta"], d["drafter"]
+    err = np.abs((ang - theta + 180.0) % 360.0 - 180.0)
+
+    rng = np.random.default_rng(0)
+    good = rng.choice(np.nonzero(err < 10.0)[0], size=6, replace=False)
+    worst = np.argsort(-err)[:6]
+
+    fig, axes = plt.subplots(2, 6, figsize=(12, 4.4))
+    for row, (idx, title) in enumerate(((good, "typical"),
+                                        (worst, "largest\ndisagreement"))):
+        for col, i in enumerate(idx):
+            ax = axes[row, col]
+            ax.imshow(255 - x[i], cmap="gray", vmin=0, vmax=255)
+            n = x[i].shape[0]
+            c = n / 2 - 0.5
+            for a, colour, w in ((theta[i], "#2e7d32", 2.6), (ang[i], "#c2185b", 1.8)):
+                r = math.radians(float(a))
+                ax.arrow(c, c, 0.33 * n * math.cos(r), 0.33 * n * math.sin(r),
+                         color=colour, width=w * 0.35, head_width=w * 2.0,
+                         length_includes_head=True)
+            ax.set_title(f"d{who[i]}  {err[i]:.0f}" + "°", fontsize=8, pad=3)
+            ax.set_xticks([]), ax.set_yticks([]), ax.grid(False)
+        axes[row, 0].set_ylabel(title, fontsize=9)
+    fig.suptitle("Diode orientation, held out by drafter (green: CGHD's "
+                 "annotation, pink: model). In the bottom row the annotation "
+                 "is the one that is wrong.", fontsize=9)
+    fig.tight_layout()
+    return _save(fig, name)
+
+
 def write_tables() -> None:
     bench, svm = _load("outputs/benchmark.json"), _load("outputs/baseline_svm.json")
     abl = _load("outputs/ablation_preproc.json")
@@ -380,6 +468,7 @@ def main() -> None:
     fig_confusion()
     fig_qualitative()
     fig_schematic()
+    fig_diode()
     write_tables()
     print("done")
 

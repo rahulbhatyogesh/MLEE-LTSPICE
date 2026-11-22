@@ -1,0 +1,74 @@
+C:\Users\rahul\OneDrive\Desktop\MLEEE Project\scripts\diode_orient.py:211: UserWarning: Converting a tensor with requires_grad=True to a scalar may lead to unexpected behavior.
+Consider using tensor.detach() first. (Triggered internally at C:\actions-runner\_work\pytorch\pytorch\pytorch\torch\csrc\autograd\generated\python_variable_methods.cpp:837.)
+  tot += float(loss) * len(bx)
+5145 diodes, 32 drafters, 8 folds, 30 epochs, pretrained=True, device=cuda
+    epoch   1/30  loss 0.9517
+    epoch   6/30  loss 0.1113
+    epoch  11/30  loss 0.0596
+    epoch  16/30  loss 0.0288
+    epoch  21/30  loss 0.0243
+    epoch  26/30  loss 0.0179
+    epoch  30/30  loss 0.0208
+  fold 0: n= 819  polarity 1.000  median err 2.4 deg  when sure 1.000 over 100%   [108s]
+    epoch   1/30  loss 0.8743
+    epoch   6/30  loss 0.0893
+    epoch  11/30  loss 0.0406
+    epoch  16/30  loss 0.0258
+    epoch  21/30  loss 0.0226
+    epoch  26/30  loss 0.0203
+    epoch  30/30  loss 0.0175
+  fold 1: n= 760  polarity 1.000  median err 2.6 deg  when sure 1.000 over 99%   [217s]
+    epoch   1/30  loss 0.9431
+    epoch   6/30  loss 0.1040
+    epoch  11/30  loss 0.0387
+    epoch  16/30  loss 0.0281
+    epoch  21/30  loss 0.0230
+    epoch  26/30  loss 0.0166
+    epoch  30/30  loss 0.0158
+  fold 2: n= 715  polarity 1.000  median err 2.4 deg  when sure 1.000 over 99%   [329s]
+    epoch   1/30  loss 0.9075
+    epoch   6/30  loss 0.0901
+    epoch  11/30  loss 0.0354
+    epoch  16/30  loss 0.0250
+    epoch  21/30  loss 0.0185
+    epoch  26/30  loss 0.0156
+    epoch  30/30  loss 0.0140
+  fold 3: n= 664  polarity 0.973  median err 3.3 deg  when sure 0.992 over 95%   [443s]
+    epoch   1/30  loss 0.8800
+    epoch   6/30  loss 0.1051
+    epoch  11/30  loss 0.0459
+    epoch  16/30  loss 0.0319
+    epoch  21/30  loss 0.0227
+    epoch  26/30  loss 0.0198
+    epoch  30/30  loss 0.0197
+  fold 4: n= 593  polarity 0.998  median err 2.8 deg  when sure 0.998 over 100%   [557s]
+    epoch   1/30  loss 0.8630
+    epoch   6/30  loss 0.0862
+    epoch  11/30  loss 0.0731
+    epoch  16/30  loss 0.0301
+    epoch  21/30  loss 0.0230
+    epoch  26/30  loss 0.0197
+    epoch  30/30  loss 0.0193
+  fold 5: n= 576  polarity 1.000  median err 3.0 deg  when sure 1.000 over 99%   [672s]
+    epoch   1/30  loss 0.9224
+    epoch   6/30  loss 0.0899
+    epoch  11/30  loss 0.0269
+    epoch  16/30  loss 0.0384
+    epoch  21/30  loss 0.0218
+    epoch  26/30  loss 0.0175
+    epoch  30/30  loss 0.0162
+  fold 6: n= 530  polarity 0.987  median err 3.4 deg  when sure 1.000 over 92%   [789s]
+    epoch   1/30  loss 0.8914
+    epoch   6/30  loss 0.0942
+    epoch  11/30  loss 0.0435
+    epoch  16/30  loss 0.0262
+    epoch  21/30  loss 0.0192
+    epoch  26/30  loss 0.0190
+    epoch  30/30  loss 0.0171
+  fold 7: n= 488  polarity 0.994  median err 2.9 deg  when sure 0.994 over 99%   [907s]
+
+out-of-fold over 5145 diodes:
+  polarity accuracy      0.994
+  median angular error   2.7 deg
+  when sure              0.998 over 98% of diodes
+wrote C:\Users\rahul\OneDrive\Desktop\MLEEE Project\outputs\diode_orient.json and C:\Users\rahul\OneDrive\Desktop\MLEEE Project\outputs\diode_orient.oof.npz

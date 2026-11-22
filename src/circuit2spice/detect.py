@@ -18,24 +18,27 @@ tested before the model finished training.
 
 from __future__ import annotations
 
+from dataclasses import replace
 from pathlib import Path
 
 import numpy as np
 
 from .classes import NAMES, merge_label
 from .graph import Detection
-from .voc2yolo import parse_voc
+from .voc2yolo import parse_voc, parse_voc_text
 
 
 def detections_from_voc(xml_path: str | Path, min_conf: float = 1.0) -> list:
     """Ground-truth detections from a CGHD annotation file."""
     boxes, _size = parse_voc(Path(xml_path))
+    strings = parse_voc_text(Path(xml_path))
     out = []
     for raw, x1, y1, x2, y2 in boxes:
         merged = merge_label(raw)
         if merged is None:
             continue
-        out.append(Detection(merged, x1, y1, x2, y2, min_conf))
+        out.append(Detection(merged, x1, y1, x2, y2, min_conf,
+                             text=strings.get((x1, y1, x2, y2), "")))
     return out
 
 
@@ -97,8 +100,11 @@ def _iou(a: Detection, b: Detection) -> float:
 
 
 def scale_detections(dets: list, sx: float, sy: float) -> list:
+    # Carry every field across: rebuilding positionally silently dropped the
+    # transcribed text, so value reading worked on images small enough to skip
+    # rescaling and quietly did nothing on the rest.
     return [
-        Detection(d.cls, d.x1 * sx, d.y1 * sy, d.x2 * sx, d.y2 * sy, d.conf)
+        replace(d, x1=d.x1 * sx, y1=d.y1 * sy, x2=d.x2 * sx, y2=d.y2 * sy)
         for d in dets
     ]
 

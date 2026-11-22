@@ -103,6 +103,104 @@ def _escape(pin: tuple, centroid: tuple) -> tuple:
     return px, py + (ESCAPE if dy > 0 else -ESCAPE)
 
 
+def _escape_candidates(pin: tuple, centroid: tuple):
+    """Escape points to try, best-looking first.
+
+    The preferred stub runs straight out along the pin's own axis. The
+    alternatives turn 90 degrees instead, which is always clear of the sibling
+    pins -- on a vertical symbol the siblings differ in *y*, so a horizontal
+    stub cannot cross one, and vice versa -- and then lengthen the stub.
+    """
+    px, py = pin
+    dx, dy = px - centroid[0], py - centroid[1]
+    if dx == 0 and dy == 0:
+        dy = -1.0
+    if abs(dx) >= abs(dy):
+        out = (1 if dx > 0 else -1, 0)
+    else:
+        out = (0, 1 if dy > 0 else -1)
+    perp = (out[1], out[0])
+    for dist in (ESCAPE, 2 * ESCAPE, 3 * ESCAPE):
+        yield px + out[0] * dist, py + out[1] * dist
+        yield px + perp[0] * dist, py + perp[1] * dist
+        yield px - perp[0] * dist, py - perp[1] * dist
+    yield px + out[0] * GRID, py + out[1] * GRID
+
+
+def _segment_points(a: tuple, b: tuple) -> list:
+    """Every grid point on an axis-aligned segment, endpoints included.
+
+    Everything the writer emits is snapped to :data:`GRID`, so walking the
+    segment in grid steps enumerates exactly the points at which LTspice can
+    make a connection.
+    """
+    (ax, ay), (bx, by) = a, b
+    if ax == bx and ay == by:
+        return [a]
+    step = GRID if ax == bx else GRID
+    if ax == bx:
+        lo, hi = sorted((ay, by))
+        return [(ax, y) for y in range(lo, hi + 1, step)] + [(ax, hi)]
+    lo, hi = sorted((ax, bx))
+    return [(x, ay) for x in range(lo, hi + 1, step)] + [(hi, ay)]
+
+
+def _assign_escapes(graph: CircuitGraph, placement: dict) -> tuple[dict, list]:
+    """Pick a stub endpoint per pin such that no two nets ever touch.
+
+    Connectivity here is carried by net-name ``FLAG``s on short stubs, which is
+    exact only as long as two *different* nets never share a point. Nothing in
+    the geometry guarantees that: two symbols stacked a pitch apart in the same
+    column have their facing pins escape towards each other and meet in the
+    middle, which both stamps two names on one point and fuses the two stubs
+    into a single wire. LTspice then silently reports one of the nets wired to
+    the other -- the exact failure the round-trip check exists to catch.
+
+    So stubs are claimed point by point: a candidate is accepted only if every
+    grid point it occupies is free or already belongs to the same net.
+
+    Returns ``{(ref, pin_index): escape_point}`` and a list of warnings for any
+    pin where no clear route existed.
+    """
+    claimed: dict = {}
+    warnings: list = []
+
+    # Pins are claimed first: they are fixed, so a stub must route around them.
+    pin_xy: list = []
+    for comp in graph.components:
+        if comp.ref not in placement:
+            continue
+        _origin, _rot, pins = placement[comp.ref]
+        cx = sum(p[0] for p in pins) / len(pins)
+        cy = sum(p[1] for p in pins) / len(pins)
+        for i, (node, pin) in enumerate(zip(graph.wired_nodes(comp), pins)):
+            if node < 0:
+                continue
+            claimed.setdefault(pin, node)
+            pin_xy.append((comp.ref, i, node, pin, (cx, cy)))
+
+    escapes: dict = {}
+    # Longest stubs are hardest to place, but all stubs start equal; order by
+    # position so the output is deterministic.
+    for ref, i, node, pin, centroid in sorted(pin_xy, key=lambda t: (t[3], t[0], t[1])):
+        chosen = None
+        for cand in _escape_candidates(pin, centroid):
+            pts = _segment_points(pin, cand)
+            if all(claimed.get(p, node) == node for p in pts):
+                chosen = cand
+                for p in pts:
+                    claimed[p] = node
+                break
+        if chosen is None:
+            chosen = _escape(pin, centroid)
+            warnings.append(
+                f"{ref} pin {i}: no clear stub route; the .asc may short "
+                f"{graph.node_name(node)} to a neighbouring net"
+            )
+        escapes[(ref, i)] = chosen
+    return escapes, warnings
+
+
 def _route(spokes: list, hub: tuple) -> list:
     """Escape stub, then a perpendicular-first L to the shared hub."""
     hx, hy = hub
@@ -129,16 +227,18 @@ def to_asc(
     placement = placement or build_placement(graph)
 
     # Gather every pin, with its escape point, grouped by electrical node.
+    escapes, esc_warnings = _assign_escapes(graph, placement)
     by_node: dict = {}
     for comp in graph.components:
         if comp.ref not in placement:
             continue
         _origin, _rot, pins = placement[comp.ref]
-        cx = sum(p[0] for p in pins) / len(pins)
-        cy = sum(p[1] for p in pins) / len(pins)
-        for node, pin in zip(comp.nodes, pins):
+        for i, (node, pin) in enumerate(zip(graph.wired_nodes(comp), pins)):
             if node >= 0:
-                by_node.setdefault(node, []).append((pin, _escape(pin, (cx, cy))))
+                by_node.setdefault(node, []).append((pin, escapes[(comp.ref, i)]))
+    for w in esc_warnings:
+        if w not in graph.warnings:
+            graph.warnings.append(w)
 
     # Connectivity is expressed with net *labels*, not routed wires.
     #

@@ -1,0 +1,154 @@
+{
+  "learned/gt-boxes": {
+    "images_with_diodes": 16,
+    "diodes_scored": 16,
+    "diodes_correct": 16,
+    "accuracy": 1.0,
+    "per_circuit": {
+      "C8": {
+        "correct": 8,
+        "scored": 8
+      },
+      "C9": {
+        "correct": 8,
+        "scored": 8
+      }
+    },
+    "note": "only images whose topology already matches can be scored; without an isomorphism there is no net correspondence"
+  },
+  "rows": [
+    {
+      "stem": "C8_D1_P1",
+      "circuit": "C8",
+      "correct": 0,
+      "scored": 0,
+      "exact": false
+    },
+    {
+      "stem": "C8_D1_P2",
+      "circuit": "C8",
+      "correct": 0,
+      "scored": 0,
+      "exact": false
+    },
+    {
+      "stem": "C8_D1_P3",
+      "circuit": "C8",
+      "correct": 0,
+      "scored": 0,
+      "exact": false
+    },
+    {
+      "stem": "C8_D1_P4",
+      "circuit": "C8",
+      "correct": 0,
+      "scored": 0,
+      "exact": false
+    },
+    {
+      "stem": "C8_D2_P1",
+      "circuit": "C8",
+      "correct": 2,
+      "scored": 2,
+      "exact": true
+    },
+    {
+      "stem": "C8_D2_P2",
+      "circuit": "C8",
+      "correct": 2,
+      "scored": 2,
+      "exact": true
+    },
+    {
+      "stem": "C8_D2_P3",
+      "circuit": "C8",
+      "correct": 2,
+      "scored": 2,
+      "exact": true
+    },
+    {
+      "stem": "C8_D2_P4",
+      "circuit": "C8",
+      "correct": 2,
+      "scored": 2,
+      "exact": true
+    },
+    {
+      "stem": "C9_D1_P1",
+      "circuit": "C9",
+      "correct": 1,
+      "scored": 1,
+      "exact": true
+    },
+    {
+      "stem": "C9_D1_P2",
+      "circuit": "C9",
+      "correct": 1,
+      "scored": 1,
+      "exact": true
+    },
+    {
+      "stem": "C9_D1_P3",
+      "circuit": "C9",
+      "correct": 1,
+      "scored": 1,
+      "exact": true
+    },
+    {
+      "stem": "C9_D1_P4",
+      "circuit": "C9",
+      "correct": 1,
+      "scored": 1,
+      "exact": true
+    },
+    {
+      "stem": "C9_D2_P1",
+      "circuit": "C9",
+      "correct": 1,
+      "scored": 1,
+      "exact": true
+    },
+    {
+      "stem": "C9_D2_P2",
+      "circuit": "C9",
+      "correct": 1,
+      "scored": 1,
+      "exact": true
+    },
+    {
+      "stem": "C9_D2_P3",
+      "circuit": "C9",
+      "correct": 1,
+      "scored": 1,
+      "exact": true
+    },
+    {
+      "stem": "C9_D2_P4",
+      "circuit": "C9",
+      "correct": 1,
+      "scored": 1,
+      "exact": true
+    }
+  ],
+  "blind/gt-boxes": {
+    "images_with_diodes": 24,
+    "diodes_scored": 16,
+    "diodes_correct": 3,
+    "accuracy": 0.1875,
+    "per_circuit": {
+      "C8": {
+        "correct": 0,
+        "scored": 8
+      },
+      "C9": {
+        "correct": 3,
+        "scored": 8
+      },
+      "C12": {
+        "correct": 0,
+        "scored": 0
+      }
+    },
+    "note": "only images whose topology already matches can be scored; without an isomorphism there is no net correspondence"
+  }
+}

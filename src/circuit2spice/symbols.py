@@ -76,7 +76,12 @@ _FALLBACK: dict[str, tuple[tuple[str, int, int], ...]] = {
     "diode":            (("+", 16, 0), ("-", 16, 64)),
     "voltage":          (("+", 0, 16), ("-", 0, 96)),
     "current":          (("+", 0, 0), ("-", 0, 80)),
-    "sw":               (("A", 0, 16), ("B", 0, 96)),
+    # Four pins, not two: A and B are the terminals a drawing shows, NC+/NC-
+    # the control input it does not. The table said two, so on a machine
+    # without LTspice installed the control pins silently vanished from the
+    # schematic while the netlist still wrote them.
+    "sw":               (("A", 0, 16), ("B", 0, 96),
+                         ("NC+", -48, 80), ("NC-", -48, 32)),
     "npn":              (("C", 64, 0), ("B", 0, 48), ("E", 64, 96)),
     "nmos":             (("D", 48, 0), ("G", 0, 80), ("S", 48, 96)),
     # 3-pin ideal op-amp: no supply rails to leave dangling, which matters

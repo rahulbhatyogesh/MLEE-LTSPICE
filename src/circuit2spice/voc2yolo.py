@@ -44,6 +44,31 @@ def parse_voc(xml_path: Path) -> tuple[list, tuple[int, int]]:
     return boxes, (w, h)
 
 
+def parse_voc_text(xml_path: Path) -> dict:
+    """``{(x1, y1, x2, y2): transcribed string}`` for CGHD's text annotations.
+
+    CGHD records what each handwritten label *says* in a ``<text>`` element
+    beside the box. :func:`parse_voc` deliberately drops it -- the YOLO export
+    has no use for it -- but the value reader does, so it is pulled out
+    separately rather than changing that function's tuple shape under its four
+    callers.
+    """
+    root = ET.parse(xml_path).getroot()
+    out: dict = {}
+    for obj in root.iter("object"):
+        txt = obj.findtext("text")
+        bb = obj.find("bndbox")
+        if not txt or bb is None:
+            continue
+        try:
+            key = (float(bb.findtext("xmin")), float(bb.findtext("ymin")),
+                   float(bb.findtext("xmax")), float(bb.findtext("ymax")))
+        except (TypeError, ValueError):
+            continue
+        out[key] = txt.strip()
+    return out
+
+
 def find_image(drafter_dir: Path, stem: str) -> Path | None:
     for suf in IMAGE_SUFFIXES:
         p = drafter_dir / "images" / f"{stem}{suf}"

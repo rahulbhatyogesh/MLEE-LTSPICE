@@ -38,6 +38,40 @@ SEARCH = (
 _MEAN = np.array([0.485, 0.456, 0.406], np.float32)
 _STD = np.array([0.229, 0.224, 0.225], np.float32)
 
+#: Probability above which a pixel counts as stroke.
+#:
+#: **Not 0.5, and that is the whole point.** CGHD's masks do not agree about
+#: printed page ruling: sampling the training drafters, some annotators erased
+#: the rules and some kept them. The network learns both, so on a ruled page it
+#: reports *uncertainty* over the rules -- high enough to clear 0.5, far below
+#: the near-1.0 it gives a pen stroke. The threshold is what cashes that
+#: uncertainty in, and it is the one knob that turns a model which reproduces
+#: the ruling into one that removes it.
+#:
+#: Tuned end-to-end on drafter 1: 0.500 exact match at 0.5, 0.778 at 0.995,
+#: collapsing past 0.999 as strokes themselves start to erode. The optimum is
+#: a plateau (0.71-0.78 across 0.992-0.997), not a spike, but it *is* tuned on
+#: the same images we report, because drafter 1 ships the only reference
+#: schematics in CGHD and so is the only end-to-end signal that exists.
+DEFAULT_THRESHOLD = float(os.environ.get("CIRCUIT2SPICE_UNET_THR", "0.995"))
+
+#: Optional second, lower cut-off: keep a pixel if the network is confident
+#: (above :data:`DEFAULT_THRESHOLD`) **or** if it is merely plausible and
+#: belongs to a thick stroke. The idea is that ruling is thin *and* uncertain
+#: while a faint pencil line is thin but part of a stroke that is thick
+#: somewhere, so thickness ought to rescue the faint ink the high cut-off
+#: erodes.
+#:
+#: **Off, because it was measured and it loses.** It does what it was built
+#: for -- C8, the densest drawing, goes 4/8 to 5/8 -- but every setting costs
+#: more elsewhere than it gains: best hybrid 0.764 against 0.778 for the plain
+#: threshold, and the loss grows monotonically with how much of the uncertain
+#: band is let back in (`outputs/ablation_probthin.json`). Kept because the C8
+#: result shows the signal is real, so a per-image rule could still use it.
+DEFAULT_LOW_THRESHOLD = (float(os.environ["CIRCUIT2SPICE_UNET_LOW"])
+                         if os.environ.get("CIRCUIT2SPICE_UNET_LOW") else None)
+DEFAULT_THIN_Q = float(os.environ.get("CIRCUIT2SPICE_UNET_THIN_Q", "70"))
+
 
 class StrokeModelMissing(FileNotFoundError):
     pass
@@ -81,15 +115,27 @@ def segment_strokes(
     model_path: str | Path | None = None,
     *,
     long_side: int = 1024,
-    threshold: float = 0.5,
+    threshold: float | None = None,
+    low_threshold: float | None = None,
+    thin_q: float | None = None,
 ) -> np.ndarray:
     """Return a uint8 mask, 255 = pencil stroke, at the input's resolution.
 
     Inference runs at ``long_side`` and the probability map is then resampled
     up. Strokes are only a few pixels wide, so going much below ~1024 starts
     dissolving them; going far above costs time for no gain.
+
+    ``threshold`` defaults to :data:`DEFAULT_THRESHOLD`, which is nowhere near
+    0.5 -- see the note there before changing it.
     """
     import torch
+
+    if threshold is None:
+        threshold = DEFAULT_THRESHOLD
+    if low_threshold is None:
+        low_threshold = DEFAULT_LOW_THRESHOLD
+    if thin_q is None:
+        thin_q = DEFAULT_THIN_Q
 
     model = _load(str(find_model(model_path)))
 
@@ -108,4 +154,10 @@ def segment_strokes(
         prob = torch.sigmoid(model(tensor))[0, 0].cpu().numpy()
 
     prob = cv2.resize(prob, (w, h), interpolation=cv2.INTER_LINEAR)
-    return ((prob > threshold) * 255).astype(np.uint8)
+    mask = ((prob > threshold) * 255).astype(np.uint8)
+    if low_threshold is not None and low_threshold < threshold:
+        from .wires import remove_thin_strokes
+
+        plausible = ((prob > low_threshold) * 255).astype(np.uint8)
+        mask = cv2.bitwise_or(mask, remove_thin_strokes(plausible, thin_q))
+    return mask

@@ -1,0 +1,19 @@
+C:\Users\rahul\OneDrive\Desktop\MLEEE Project\.venv\Lib\site-packages\torch\jit\_serialization.py:176: FutureWarning: `torch.jit.load` is deprecated. Please switch to `torch.export`.
+  warnings.warn(
+gt-boxes: bill-of-values F1 over 72 in-scope images
+
+circuit    n scored  defaults    read
+C2         8      8     0.210   0.934
+C3         8      8     0.800   0.800
+C4         8      8     0.500   1.000
+C5         8      8     0.000   1.000
+C8         8      8     0.000   0.605
+C9         8      8     0.222   0.889
+C10        8      0     0.000   0.000
+C11        8      8     0.000   0.889
+C12        8      8     0.200   0.750
+
+  informative references (64 images): 0.242 -> 0.858
+  all references        (72 images): 0.193 -> 0.703
+
+wrote outputs/values.json

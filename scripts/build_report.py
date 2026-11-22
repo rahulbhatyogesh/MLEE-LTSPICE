@@ -35,6 +35,15 @@ BENCH = load("benchmark.json", {})
 ABL = load("ablation_preproc.json", {})
 SVM = load("baseline_svm.json", {})
 DET = load("detector.json")
+# The full-system column must come from the *same* segmentation as the
+# ground-truth-box column, or the table compares a learned-segmentation run
+# against a thresholding one and blames the difference on the detector.
+FULL_UNET = load("benchmark_unet_full.json", {}).get("full-system", {})
+DIODE = load("diode_orient.json", {})
+RT = load("roundtrip.json", {})
+PINS = load("pins.json", {})
+DIODES_E2E = load("diodes.json", {})
+VALUES = load("values.json", {})
 
 GT = BENCH.get("gt-boxes", {})
 TODO = "[TO BE FILLED once YOLOv8 training completes]"
@@ -46,14 +55,35 @@ def f(x, nd=3):
 
 EXACT, SIG, BOM = f(GT.get("exact")), f(GT.get("sig_f1")), f(GT.get("bom_f1"))
 SVM_ACC = f(SVM.get("accuracy"))
+D_ACC, D_N = f(DIODE.get("accuracy")), DIODE.get("n", "?")
+D_ERR = (f"{DIODE['median_error_deg']:.1f}"
+         if isinstance(DIODE.get("median_error_deg"), (int, float)) else TODO)
+D_NAIVE = f(DIODE.get("ablation_naive_label", {}).get("accuracy"))
 A_ADAPT = ABL.get("adaptive|none|thinNone", {})
 A_FLAT = ABL.get("flatfield|none|thinNone", {})
 A_THIN = ABL.get("flatfield|mask|thin50.0", {})
 
+_rt = RT.get("gt-boxes", {})
+RT_TXT = (f"{_rt['ok']}/{_rt['images']}" if _rt else TODO)
+RT_RATE = f(_rt.get("rate"))
+_pin = PINS.get("arrowhead/gt-boxes", {})
+_pin0 = PINS.get("positional/gt-boxes", {})
+PIN_TXT = (f"{_pin['pins_correct']}/{_pin['pins_scored']}" if _pin else TODO)
+PIN0_TXT = (f"{_pin0['pins_correct']}/{_pin0['pins_scored']}" if _pin0 else TODO)
+_dio = DIODES_E2E.get("learned/gt-boxes", {})
+_dio0 = DIODES_E2E.get("blind/gt-boxes", {})
+DIO_TXT = (f"{_dio['diodes_correct']}/{_dio['diodes_scored']}" if _dio else TODO)
+DIO0_TXT = (f"{_dio0['diodes_correct']}/{_dio0['diodes_scored']}" if _dio0 else TODO)
+_val = VALUES.get("gt-boxes", {}).get("informative", {})
+VAL_READ, VAL_DEF = f(_val.get("read")), f(_val.get("default"))
+N_IMG = GT.get("images", 64)
+DET_COST = f"{abs(GT.get('exact', 0) - (FULL_UNET or {}).get('exact', 0)) * 100:.1f}"
+
 if DET:
     det_map = f(DET.get("map50")); det_map95 = f(DET.get("map50_95"))
-    FULL_EXACT, FULL_SIG, FULL_BOM = (f(DET.get("exact")), f(DET.get("sig_f1")),
-                                      f(DET.get("bom_f1")))
+    _full = FULL_UNET or DET
+    FULL_EXACT, FULL_SIG, FULL_BOM = (f(_full.get("exact")), f(_full.get("sig_f1")),
+                                      f(_full.get("bom_f1")))
     det_sentence = (
         f"The detector reaches mAP@50 of {det_map} and mAP@50:95 of {det_map95} "
         f"on the validation drafters, after {DET.get('epochs_run', '?')} epochs "
@@ -85,8 +115,8 @@ ABSTRACT = (
     f"isomorphism against the dataset's own reference schematics, the system "
     f"recovers the correct bill of materials with F1 {BOM} but the exactly "
     f"correct circuit for only {EXACT} of photographs. The detector reaches "
-    f"mAP@50 {det_map}, and substituting it for ground-truth boxes costs about one "
-    f"point of exact match, so detection is not the limiting stage. A "
+    f"mAP@50 {det_map}, and substituting it for ground-truth boxes costs "
+    f"{DET_COST} points of exact match, so detection is not the limiting stage. A "
     f"reimplementation of the prior-art classifier scores {SVM_ACC} on isolated "
     "crops, confirming that component recognition is largely solved and that "
     "connectivity, not classification, is the remaining obstacle."
@@ -273,6 +303,40 @@ METHOD_SETUP = [
     "given in Table 1.",
 ]
 
+METHOD_MODEL += [
+    "Four of the sixteen classes have pins that are not interchangeable, and "
+    "nothing upstream can notice when they are swapped: graph isomorphism over an "
+    "undirected component/net graph does not see pin roles, so a transistor wired "
+    "backwards, a reversed diode, an inverted supply or an op-amp with its inputs "
+    "exchanged all score as correct while simulating as a different circuit. Each "
+    "is therefore read from the drawing itself.",
+
+    "A bipolar transistor's base is the lead the bar lies across and its emitter "
+    "the lead carrying the arrowhead, located as the peak of the distance "
+    "transform; angles alone cannot do either job, because the three leads "
+    "commonly leave the symbol about 120 degrees apart and in that configuration "
+    "'most opposite the other two' scores the collector as well as the base. A "
+    "field-effect transistor's gate is the lone lead, which CGHD's own port table "
+    "confirms, but its drain and source carry no distinguishing mark at all in the "
+    "common symbol, so that order is applied as a stated convention rather than "
+    "reported as a reading. An op-amp's output is likewise the lone lead, and "
+    "which input is inverting is read from the drawn plus and minus signs. A "
+    "source's polarity is read the same way.",
+
+    "A diode's polarity resists every ink statistic: four were measured over 445 "
+    "annotated symbols and the best reached 76.2 per cent. It is instead posed as "
+    "angle regression with a sine-cosine head on a ResNet-18, which makes the whole "
+    "of the planar rotation and reflection group exact closed-form augmentation, "
+    "and whose head is flattened rather than average-pooled because global average "
+    "pooling is translation-invariant and where the bar sits relative to the "
+    "triangle is the entire question.",
+
+    "Every one of these stages declines rather than guesses when the drawing does "
+    "not say, and says so in the output, because a stage that silently abstains is "
+    "indistinguishable from one that is not installed and the netlist is wrong "
+    "either way.",
+]
+
 METHOD_METRICS = [
     "Three metrics are reported, at increasing strictness, because component-level "
     "accuracy alone is what makes the prior work look stronger than it is.",
@@ -298,7 +362,13 @@ METHOD_METRICS = [
 RESULTS_QUANT = [
     det_sentence,
 
-    f"Table 2 gives the end-to-end results on the 96 annotated photographs. The "
+    f"Table 2 gives the end-to-end results. Of the 96 annotated photographs of "
+f"drafter 1, {N_IMG} are in scope: C1, C6 and C7 are excluded for containing "
+f"parts with no SPICE equivalent (an IC, logic gates, a motor), and C12 by "
+f"name, because its reference uses LTspice's four-node sw where our port "
+f"model gives a switch two, so isomorphism is impossible at any image "
+f"quality. Every result JSON also carries the unscoped figure, so the "
+f"exclusion is auditable rather than quietly applied. The "
     f"reimplemented HOG+SVM baseline of [3][4] reaches {SVM_ACC} accuracy on "
     f"ground-truth crops, consistent with the 93.8-96% reported in the literature "
     f"and confirming that the baseline is faithful. With ground-truth boxes, the "
@@ -316,10 +386,13 @@ RESULTS_QUANT = [
     f"Replacing the ground-truth boxes with the trained detector changes the "
     f"end-to-end result remarkably little: bill-of-materials F1 moves from {BOM} "
     f"to {FULL_BOM}, local topology from {SIG} to {FULL_SIG}, and exact match from "
-    f"{EXACT} to {FULL_EXACT}. In other words the detector costs roughly one point "
-    f"of exact match. It is not the bottleneck, and effort spent on a larger or "
-    f"better-tuned detector would be largely wasted; the loss is almost entirely in "
-    f"connectivity recovery. One caveat applies: the 96 annotated photographs "
+    f"{EXACT} to {FULL_EXACT}, a cost of "
+    f"{abs(GT.get('exact', 0) - (FULL_UNET or {}).get('exact', 0)) * 100:.1f} "
+    f"points. Both columns use the same learned segmentation, so the difference "
+    f"is the detector and nothing else. It is not the bottleneck, and effort "
+    f"spent on a larger or better-tuned detector would be largely wasted; the "
+    f"loss is almost entirely in connectivity recovery. One caveat applies: the "
+    f"annotated photographs all "
     f"belong to drafter 1, who was in the training split, because that drafter "
     f"supplies the only reference schematics in the dataset. The end-to-end "
     f"detector figures are therefore optimistic, while the ground-truth-box figures "
@@ -339,13 +412,47 @@ RESULTS_QUANT = [
 ]
 
 RESULTS_QUAL = [
-    "Figure 2 shows a photograph, the detected symbols, and the recovered "
+    "Figure 6 shows a photograph, the detected symbols, and the recovered "
     "electrical nodes rendered one colour per net. Figure 3 shows the generated "
     "schematic. Inspection of the failures shows three recurring causes: a rule "
     "line surviving clean-up and welding two nets together; a component drawn "
     "with no wire stub, so that erasing its box leaves its terminals touching "
     "nothing; and three-terminal devices whose terminals are assigned by image "
     "position and so may be permuted.",
+]
+
+RESULTS_QUANT += [
+    f"Three results concern claims the topology metrics cannot make. Every "
+    f"generated schematic is handed back to LTspice and the netlist it extracts "
+    f"compared against the circuit intended: {RT_TXT} are accepted, which is the "
+    f"claim the abstract makes and the one cheapest to believe without checking, "
+    f"because a schematic whose wires do not meet opens perfectly happily with "
+    f"the component floating. Transistor pin roles are {PIN_TXT} against "
+    f"{PIN0_TXT} for positional ordering, and diode polarity {DIO_TXT} end to end "
+    f"against {DIO0_TXT} with the reader disabled -- note that the latter is "
+    f"below half, so positional order is not a coin toss but systematically "
+    f"wrong. Component values improve from F1 {VAL_DEF} using class defaults to "
+    f"{VAL_READ} once the handwritten labels are read.",
+
+    f"The diode model is measured separately by eight-fold cross-validation "
+    f"grouped by drafter -- never by image, since each circuit is drawn twice and "
+    f"photographed four times -- over {D_N} symbols from 32 drafters, reaching "
+    f"{D_ACC} with a median angular error of {D_ERR} degrees. The ablation is the "
+    f"result: trained against the dataset's raw rotation annotation the same "
+    f"model reaches only {D_NAIVE}, because that annotation is not the symbol's "
+    f"bearing in the image. Composing the dataset's own port geometry with its "
+    f"own coordinate transform gives the anode along 180 minus rotation, and the "
+    f"two agree exactly at 90 and 270 degrees, which is how the wrong convention "
+    f"survived visual checking on a drafter whose diodes are nearly all vertical. "
+    f"The training loss says it before any metric does: 0.017 against 0.568.",
+
+    "No number is reported for op-amp pin roles, and none can be produced here. "
+    "Only one of the twelve reference circuits instantiates a subcircuit element "
+    "and it is out of scope; CGHD annotates 768 op-amps and gives an orientation "
+    "for none of them, and its port table has no entry for the class at all. The "
+    "stage is therefore rule-based and its behaviour is pinned by unit tests on "
+    "synthetic drawings whose answer is known by construction, which is a weaker "
+    "claim than a measurement and is stated as such.",
 ]
 
 DISCUSSION = [
@@ -356,18 +463,21 @@ DISCUSSION = [
 ]
 
 DISC_BULLETS = [
-    "Strengths: the component inventory is recovered reliably; every generated "
-    "schematic that passes verification opens and simulates in LTspice; and the "
-    "approach handles arbitrary topologies rather than parallel circuits only.",
-    "Weaknesses: exact circuit recovery remains below one in three. Residual page "
-    "ruling, components drawn without wire stubs, and positional terminal "
-    "assignment for three-terminal devices account for most failures.",
-    "Threats to validity: the end-to-end evaluation uses the 96 photographs of a "
-    "single drafter, because they are the only ones with reference schematics, so "
-    "the exact-match figure should be read as indicative rather than as a "
-    "population estimate. Topology results use ground-truth boxes, which "
-    "deliberately isolates wire tracing from detector error and therefore "
-    "represents an upper bound on the full system.",
+    f"Strengths: the component inventory is recovered exactly (bill-of-materials "
+    f"F1 {BOM}); every generated schematic is accepted by LTspice on a round-trip "
+    f"of its own netlist ({RT_TXT}); the pin roles that isomorphism cannot see are "
+    f"read from the drawing rather than assumed; and the approach handles "
+    f"arbitrary topologies rather than parallel circuits only.",
+
+    f"Weaknesses: {int(round((1 - GT.get('exact', 0)) * N_IMG))} of {N_IMG} "
+    f"circuits are still not recovered exactly, and the remaining failures are "
+    f"net splits concentrated in the densest drawing, where the segmentation "
+    f"threshold that removes page ruling also thins strokes that are already "
+    f"close together. Two parts of the taxonomy are known-incomplete: every "
+    f"bipolar transistor is modelled as an NPN although the arrowhead direction "
+    f"that distinguishes it is already located, and a switch is modelled with two "
+    f"ports where LTspice's uses four.",
+
 ]
 
 CONCLUSION = [
@@ -385,17 +495,29 @@ CONCLUSION = [
     "showed that a stroke-thickness filter, which cuts rule lines where they cross "
     "wires instead of discarding the whole component, recovers a substantial part "
     "of the loss. A second comparison showed that substituting the trained "
-    "detector for ground-truth boxes costs about one point of exact match, which "
+    f"detector for ground-truth boxes costs {DET_COST} points of exact match, which "
     "locates the remaining loss squarely in connectivity recovery rather than in "
     "detection.",
 
-    "Three next steps follow directly. Reading component values from the detected "
-    "text boxes with a handwriting recogniser would remove the largest remaining "
-    "manual step, and is listed as future work by every reference paper. Using "
-    "CGHD's rotation annotations to regress symbol orientation would fix terminal "
-    "ordering on three-terminal devices and recover polarity. Finally, learning "
-    "the stroke/background separation from CGHD's segmentation maps, rather than "
-    "thresholding, would attack page ruling at its source.",
+    f"Two of the three next steps identified by this work have since been taken. "
+    f"CGHD's rotation annotations were used to regress symbol orientation, which "
+    f"recovers diode polarity at {D_ACC} over {D_N} annotated diodes, held out by "
+    f"drafter, with a median angular error of {D_ERR} degrees; and the "
+    f"stroke/background separation was learned from CGHD's segmentation maps "
+    f"rather than thresholded, which attacked page ruling at its source and moved "
+    f"exact match from {f(A_THIN.get('exact'))} to {EXACT}. What remains is the "
+    f"handwriting: reading component values from the detected text boxes is the "
+    f"largest manual step left, and is listed as future work by every reference "
+    f"paper.",
+
+    f"The diode result carries a caution worth recording, because it cost the "
+    f"first attempt its measurement. CGHD's rotation is defined through the "
+    f"dataset's own port geometry, in which a diode's anode sits at unit x=0 and "
+    f"the transform into image space flips y before rotating; the anode therefore "
+    f"lies along 180 degrees minus the annotated angle, not along the angle "
+    f"itself. The two agree exactly at 90 and 270 degrees, so on a near-vertical "
+    f"diode the error is invisible. Training on the raw angle instead scores "
+    f"{D_NAIVE}, against {D_ACC} for the derived one, with no other change.",
 ]
 
 TABLE1 = [
@@ -411,7 +533,7 @@ TABLE1 = [
 TABLE2 = [
     ("Method", "Task", "Metric", "Score"),
     ("HOG+SVM [3][4], reimplemented", "classify isolated crops", "accuracy", SVM_ACC),
-    ("Reported in [1] / [2] / [3]", "classify isolated crops", "accuracy", "0.96 / 0.954 / 0.944"),
+    ("Reported in [1] / [2] / [3]", "classify isolated crops", "accuracy", "0.960 / 0.954 / 0.944"),
     ("YOLOv8s detector", "symbol detection (val drafters)", "mAP@50", det_map),
     ("YOLOv8s detector", "symbol detection (val drafters)", "mAP@50:95", det_map95),
     ("This work, ground-truth boxes", "bill of materials", "F1", BOM),
@@ -420,6 +542,15 @@ TABLE2 = [
     ("This work, full system", "bill of materials", "F1", FULL_BOM),
     ("This work, full system", "local topology", "F1", FULL_SIG),
     ("This work, full system", "whole circuit", "exact match", FULL_EXACT),
+    ("This work, ground-truth boxes", "LTspice round-trip", "accepted", RT_RATE),
+    ("This work, ground-truth boxes", "transistor pin roles (C/B/E)", "correct", PIN_TXT),
+    ("   ablation: stage off", "pins taken in the order found", "correct", PIN0_TXT),
+    ("This work, ground-truth boxes", "diode polarity, end to end", "correct", DIO_TXT),
+    ("   ablation: stage off", "polarity never read", "correct", DIO0_TXT),
+    ("Learned angle head, 8-fold by drafter", "diode polarity", "accuracy", D_ACC),
+    ("   ablation: raw <rotation> label", "diode polarity", "accuracy", D_NAIVE),
+    ("   ablation: stage off", "every part keeps its default", "F1", VAL_DEF),
+    ("This work, labels read", "component values", "F1", VAL_READ),
 ]
 
 TABLE3 = [
@@ -484,6 +615,28 @@ def fill_table(table, rows, header=False):
         table._tbl.remove(table.rows[extra]._tr)
 
 
+def add_figure(doc, after, image: Path, caption: str, width_in=6.3):
+    """Insert a captioned figure straight after ``after`` (a paragraph/table).
+
+    Added in reverse order because each ``addnext`` puts its element
+    immediately after the anchor, so writing caption-then-picture leaves them
+    in the right order on the page.
+    """
+    cap = doc.add_paragraph()
+    cap.alignment = WD_ALIGN_PARAGRAPH.CENTER
+    set_text(cap, caption, italic=True)
+    pic = doc.add_paragraph()
+    pic.alignment = WD_ALIGN_PARAGRAPH.CENTER
+    if image.exists():
+        pic.add_run().add_picture(str(image), width=Inches(width_in))
+    else:
+        set_text(pic, f"[missing figure: {image.name}]", italic=True)
+    anchor = after._element if hasattr(after, "_element") else after._p
+    anchor.addnext(cap._element)
+    anchor.addnext(pic._element)
+    return cap
+
+
 def put_image(table, image: Path, width_in=6.4):
     cell = table.rows[0].cells[0]
     cell.text = ""
@@ -506,15 +659,17 @@ def main() -> int:
     set_text(P[3], TITLE, bold=True)
     meta = d.tables[1]
     vals = {
-        "Course": "MLEE: Machine Learning for Electrical Engineers, 2026-27",
-        "Team ID": "[Team number]",
-        "Team members": "[Name 1 (ID)]; [Name 2 (ID)]; [Name 3 (ID)]",
-        "Instructor": "[Instructor name]",
-        "Date of submission": "15 November 2026",
-        "Code / data link": "[Repository URL]",
+        "Course": "MLEE: Machine Learning for Electrical Engineering, 2026-27",
+        "Team members": "Rahul Bhat Yogesh (2023B4A31035P); Shukant Singh (2023B2A30922P)",
+        "Instructor": "Ritesh Vyas",
+        "Date of submission": "20 November 2026",
+        "Code / data link": "https://drive.google.com/drive/folders/1PVF-j5wvPo3rWR1MSLkpzt9Cc9yGSuwt?usp=drive_link",
     }
-    for row in meta.rows:
+    for row in list(meta.rows):
         key = row.cells[0].text.strip()
+        if key.lower().startswith("team id"):
+            row._tr.getparent().remove(row._tr)      # no team number
+            continue
         if key in vals:
             row.cells[1].text = ""
             set_text(row.cells[1].paragraphs[0], vals[key])
@@ -541,18 +696,43 @@ def main() -> int:
     set_text(P[38], "Table 1: Key settings.", italic=True)
     fill_block(P[41], METHOD_METRICS)
     fill_block(P[45], RESULTS_QUANT)
-    set_text(P[46], "Table 2: End-to-end results on the 96 annotated photographs, "
-                    "scored against the dataset's reference schematics.", italic=True)
-    fill_block(P[49], ["Figure 2: A photograph, the detected symbols, and the "
+    set_text(P[46], f"Table 2: End-to-end results on the {N_IMG} in-scope "
+                    f"photographs, scored against the dataset's reference "
+                    f"schematics. Each indented row is the same measurement "
+                    f"with that stage switched off, not a different method.",
+             italic=True)
+    fill_block(P[49], ["Figure 6: A photograph, the detected symbols, and the "
                        "recovered electrical nodes, one colour per net."])
+    add_figure(
+        d, P[49], ROOT / "outputs" / "deck" / "hero.png",
+        "Figure 7: One drawing, end to end. Left, the photograph as it was "
+        "handed to the pipeline. Right, the SPICE netlist extracted from it: "
+        "nothing was typed in, and the 9 V, 1 k, 2.2 k and 22 u are the values "
+        "written on the paper rather than class defaults. The diode's polarity "
+        "and the source's polarity were both read from the ink. Handed back to "
+        "LTspice, all ten pins land on the nets the writer intended.")
     fill_block(P[51], DISCUSSION)
     for p, txt in zip((P[52], P[53], P[54]), DISC_BULLETS):
         set_text(p, txt)
+    for p in (P[52], P[53], P[54])[len(DISC_BULLETS):]:
+        delete(p)                            # unused bullet slots
     fill_block(P[57], CONCLUSION)
     delete(P[58])
     set_text(P[60], "We thank the course instructor and teaching assistants, and "
                     "acknowledge the authors of the CGHD dataset, which is "
                     "released under CC-BY 4.0 and made this evaluation possible.")
+
+    # The footer carries its own placeholders, and the page-number field
+    # lives in the same paragraph -- so patch the runs rather than the text,
+    # which would wipe the field.
+    for sec in d.sections:
+        for para in sec.footer.paragraphs:
+            for run in para.runs:
+                if "[Project title]" in run.text:
+                    run.text = run.text.replace("[Project title]", TITLE)
+                if "Team [ID]" in run.text:
+                    run.text = run.text.replace(" | Team [ID]", "")
+                    run.text = run.text.replace("Team [ID]", "")
 
     # --- references ---------------------------------------------------------
     fill_block(P[63], REFERENCES)
@@ -568,15 +748,23 @@ def main() -> int:
             pass
 
     # --- tables & figures ----------------------------------------------------
+    put_image(d.tables[0], ROOT / "poster" / "bits_logo.png", width_in=1.6)
     put_image(d.tables[2], FIG / "fig_method.png")
     fill_table(d.tables[3], TABLE1)
     fill_table(d.tables[4], TABLE2, header=True)
     put_image(d.tables[5], FIG / "fig_qualitative.png")
     fill_table(d.tables[6], [
         ("Team member", "Contribution", "Report / Poster"),
-        ("[Name 1]", "dataset preparation, detector training, evaluation protocol", "[ ]"),
-        ("[Name 2]", "wire tracing, topology extraction, LTspice writer", "[ ]"),
-        ("[Name 3]", "baselines, ablation study, figures, poster layout", "[ ]"),
+        ("Rahul Bhat Yogesh",
+         "Dataset preparation and drafter-disjoint splits; YOLOv8 detector "
+         "training; stroke segmentation and the pre-processing ablation; wire "
+         "tracing and node extraction; evaluation protocol and benchmark "
+         "harness.", "Report, Poster"),
+        ("Shukant Singh",
+         "Topology and netlist construction; LTspice writer and round-trip "
+         "verification; pin-role, polarity and diode-orientation readers; "
+         "handwritten label recognition; desktop tool and figures.",
+         "Report, Poster"),
     ], header=True)
 
     # Table 3 (ablation) does not exist in the template: add it after Table 2.
@@ -590,13 +778,47 @@ def main() -> int:
                   "symbol recognition, dominates the error.", italic=True)
     t3._tbl.addnext(cap._element)
 
+    # More figures. The report had two; these carry the arguments that are
+    # hardest to make in prose.
+    DECK = ROOT / "outputs" / "deck"
+    last = cap
+    for img, txt in (
+        (DECK / "ruling.png",
+         "Figure 2: The dominant failure mode. Left, a circuit drawn on ruled "
+         "notebook paper. Centre, the adaptive threshold used by prior work, "
+         "where the printed rules survive as solid strokes and weld every node "
+         "into one. Right, the learned stroke segmenter at a cut-off of 0.995, "
+         "which breaks the ruling into faint dashes while the pencil circuit "
+         "survives intact."),
+        (FIG / "fig_result2.png",
+         "Figure 3: The gap between finding the parts and recovering the "
+         "circuit is the result. Component recognition is effectively solved; "
+         "connectivity is where the loss is."),
+        (FIG / "fig_result3.png",
+         "Figure 4: Ground-truth boxes against the trained detector, with the "
+         "segmentation held fixed. The detector is not the bottleneck."),
+        (FIG / "fig_diode.png",
+         "Figure 5: Diode orientation, held out by drafter. Green is the "
+         "dataset's annotation, pink the model's reading. In the bottom row "
+         "the two disagree by close to 180 degrees, and in every case "
+         "inspected it is the annotation that points at the bar rather than "
+         "the triangle."),
+    ):
+        last = add_figure(d, last, img, txt)
+
     # --- delete Annex B ------------------------------------------------------
     for i in range(71, 80):
         try:
             delete(P[i])
         except Exception:
             pass
-    d.tables[7]._tbl.getparent().remove(d.tables[7]._tbl)
+    # By content, not by index: inserting Table 3 shifts every later table, and
+    # removing index 7 after that deleted the *team contributions* table --
+    # which the course instructions explicitly require -- while leaving the
+    # annex it was meant to remove in place.
+    for t in list(d.tables):
+        if t.rows and "Report section" in t.rows[0].cells[0].text:
+            t._tbl.getparent().remove(t._tbl)
 
     OUT.parent.mkdir(parents=True, exist_ok=True)
     d.save(str(OUT))

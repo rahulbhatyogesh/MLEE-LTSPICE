@@ -1,0 +1,22 @@
+C:\Users\rahul\OneDrive\Desktop\MLEEE Project\.venv\Lib\site-packages\torch\jit\_serialization.py:176: FutureWarning: `torch.jit.load` is deprecated. Please switch to `torch.export`.
+  warnings.warn(
+gt-boxes: all circuits         : images=96  exact-topology=0.656  BoM-F1=0.966  signature-F1=0.743
+gt-boxes: in scope            : images=72  exact-topology=0.778  BoM-F1=1.000  signature-F1=0.838
+gt-boxes: excluded (unsupported): images=24  exact-topology=0.292  BoM-F1=0.863  signature-F1=0.458
+  excluded ['C1', 'C6', 'C7'] -- contain parts with no SPICE equivalent (IC, logic gates)
+
+per circuit:
+  C1   n= 8 exact=0/8  sig-F1=0.115  (6 vs 7 elements)
+  C2   n= 8 exact=7/8  sig-F1=0.900  (10 vs 10 elements)
+  C3   n= 8 exact=8/8  sig-F1=1.000  (3 vs 3 elements)
+  C4   n= 8 exact=8/8  sig-F1=1.000  (4 vs 4 elements)
+  C5   n= 8 exact=8/8  sig-F1=1.000  (3 vs 3 elements)
+  C6   n= 8 exact=0/8  sig-F1=0.333  (4 vs 8 elements)
+  C7   n= 8 exact=7/8  sig-F1=0.925  (10 vs 10 elements)
+  C8   n= 8 exact=4/8  sig-F1=0.727  (11 vs 11 elements)
+  C9   n= 8 exact=8/8  sig-F1=1.000  (5 vs 5 elements)
+  C10  n= 8 exact=6/8  sig-F1=0.875  (4 vs 4 elements)
+  C11  n= 8 exact=7/8  sig-F1=0.925  (5 vs 5 elements)
+  C12  n= 8 exact=0/8  sig-F1=0.114  (23 vs 23 elements)
+
+wrote outputs/e2e_gt.json

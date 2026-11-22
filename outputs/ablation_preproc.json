@@ -1,44 +1,299 @@
 {
   "adaptive|none|thinNone": {
-    "images": 96,
-    "exact": 0.25,
-    "bom_f1": 0.9658,
-    "sig_f1": 0.3278
+    "images": 72,
+    "exact": 0.3611,
+    "bom_f1": 1.0,
+    "sig_f1": 0.4112,
+    "circuits": [
+      "C10",
+      "C11",
+      "C12",
+      "C2",
+      "C3",
+      "C4",
+      "C5",
+      "C8",
+      "C9"
+    ],
+    "unscoped": {
+      "images": 96,
+      "exact": 0.3021,
+      "bom_f1": 0.9658,
+      "sig_f1": 0.355,
+      "circuits": [
+        "C1",
+        "C10",
+        "C11",
+        "C12",
+        "C2",
+        "C3",
+        "C4",
+        "C5",
+        "C6",
+        "C7",
+        "C8",
+        "C9"
+      ]
+    }
   },
   "flatfield|none|thinNone": {
-    "images": 96,
-    "exact": 0.2812,
-    "bom_f1": 0.9658,
-    "sig_f1": 0.4018
+    "images": 72,
+    "exact": 0.3889,
+    "bom_f1": 1.0,
+    "sig_f1": 0.4498,
+    "circuits": [
+      "C10",
+      "C11",
+      "C12",
+      "C2",
+      "C3",
+      "C4",
+      "C5",
+      "C8",
+      "C9"
+    ],
+    "unscoped": {
+      "images": 96,
+      "exact": 0.3333,
+      "bom_f1": 0.9658,
+      "sig_f1": 0.4056,
+      "circuits": [
+        "C1",
+        "C10",
+        "C11",
+        "C12",
+        "C2",
+        "C3",
+        "C4",
+        "C5",
+        "C6",
+        "C7",
+        "C8",
+        "C9"
+      ]
+    }
   },
   "flatfield|mask|thinNone": {
-    "images": 96,
-    "exact": 0.2812,
-    "bom_f1": 0.9658,
-    "sig_f1": 0.4018
+    "images": 72,
+    "exact": 0.3889,
+    "bom_f1": 1.0,
+    "sig_f1": 0.4498,
+    "circuits": [
+      "C10",
+      "C11",
+      "C12",
+      "C2",
+      "C3",
+      "C4",
+      "C5",
+      "C8",
+      "C9"
+    ],
+    "unscoped": {
+      "images": 96,
+      "exact": 0.3333,
+      "bom_f1": 0.9658,
+      "sig_f1": 0.4056,
+      "circuits": [
+        "C1",
+        "C10",
+        "C11",
+        "C12",
+        "C2",
+        "C3",
+        "C4",
+        "C5",
+        "C6",
+        "C7",
+        "C8",
+        "C9"
+      ]
+    }
   },
   "flatfield|mask|thin50.0": {
-    "images": 96,
-    "exact": 0.3333,
-    "bom_f1": 0.9658,
-    "sig_f1": 0.4527
+    "images": 72,
+    "exact": 0.5,
+    "bom_f1": 1.0,
+    "sig_f1": 0.5834,
+    "circuits": [
+      "C10",
+      "C11",
+      "C12",
+      "C2",
+      "C3",
+      "C4",
+      "C5",
+      "C8",
+      "C9"
+    ],
+    "unscoped": {
+      "images": 96,
+      "exact": 0.4271,
+      "bom_f1": 0.9658,
+      "sig_f1": 0.5241,
+      "circuits": [
+        "C1",
+        "C10",
+        "C11",
+        "C12",
+        "C2",
+        "C3",
+        "C4",
+        "C5",
+        "C6",
+        "C7",
+        "C8",
+        "C9"
+      ]
+    }
   },
   "flatfield|mask|thin60.0": {
-    "images": 96,
-    "exact": 0.3125,
-    "bom_f1": 0.9658,
-    "sig_f1": 0.43
+    "images": 72,
+    "exact": 0.5139,
+    "bom_f1": 1.0,
+    "sig_f1": 0.6017,
+    "circuits": [
+      "C10",
+      "C11",
+      "C12",
+      "C2",
+      "C3",
+      "C4",
+      "C5",
+      "C8",
+      "C9"
+    ],
+    "unscoped": {
+      "images": 96,
+      "exact": 0.4375,
+      "bom_f1": 0.9658,
+      "sig_f1": 0.5378,
+      "circuits": [
+        "C1",
+        "C10",
+        "C11",
+        "C12",
+        "C2",
+        "C3",
+        "C4",
+        "C5",
+        "C6",
+        "C7",
+        "C8",
+        "C9"
+      ]
+    }
   },
   "flatfield|mask|thin70.0": {
-    "images": 96,
-    "exact": 0.3125,
-    "bom_f1": 0.9658,
-    "sig_f1": 0.4307
+    "images": 72,
+    "exact": 0.5278,
+    "bom_f1": 1.0,
+    "sig_f1": 0.6401,
+    "circuits": [
+      "C10",
+      "C11",
+      "C12",
+      "C2",
+      "C3",
+      "C4",
+      "C5",
+      "C8",
+      "C9"
+    ],
+    "unscoped": {
+      "images": 96,
+      "exact": 0.4479,
+      "bom_f1": 0.9658,
+      "sig_f1": 0.5666,
+      "circuits": [
+        "C1",
+        "C10",
+        "C11",
+        "C12",
+        "C2",
+        "C3",
+        "C4",
+        "C5",
+        "C6",
+        "C7",
+        "C8",
+        "C9"
+      ]
+    }
   },
   "flatfield|mask|thin80.0": {
-    "images": 96,
-    "exact": 0.2083,
-    "bom_f1": 0.9658,
-    "sig_f1": 0.323
+    "images": 72,
+    "exact": 0.4861,
+    "bom_f1": 1.0,
+    "sig_f1": 0.5872,
+    "circuits": [
+      "C10",
+      "C11",
+      "C12",
+      "C2",
+      "C3",
+      "C4",
+      "C5",
+      "C8",
+      "C9"
+    ],
+    "unscoped": {
+      "images": 96,
+      "exact": 0.3854,
+      "bom_f1": 0.9658,
+      "sig_f1": 0.4967,
+      "circuits": [
+        "C1",
+        "C10",
+        "C11",
+        "C12",
+        "C2",
+        "C3",
+        "C4",
+        "C5",
+        "C6",
+        "C7",
+        "C8",
+        "C9"
+      ]
+    }
+  },
+  "unet|none|thinNone": {
+    "images": 72,
+    "exact": 0.7778,
+    "bom_f1": 1.0,
+    "sig_f1": 0.8379,
+    "circuits": [
+      "C10",
+      "C11",
+      "C12",
+      "C2",
+      "C3",
+      "C4",
+      "C5",
+      "C8",
+      "C9"
+    ],
+    "unscoped": {
+      "images": 96,
+      "exact": 0.6562,
+      "bom_f1": 0.9658,
+      "sig_f1": 0.7429,
+      "circuits": [
+        "C1",
+        "C10",
+        "C11",
+        "C12",
+        "C2",
+        "C3",
+        "C4",
+        "C5",
+        "C6",
+        "C7",
+        "C8",
+        "C9"
+      ]
+    },
+    "note": "learned stroke segmentation at segment.DEFAULT_THRESHOLD"
   }
 }

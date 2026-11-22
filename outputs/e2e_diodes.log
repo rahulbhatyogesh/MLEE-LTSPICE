@@ -1,0 +1,8 @@
+C:\Users\rahul\OneDrive\Desktop\MLEEE Project\.venv\Lib\site-packages\torch\jit\_serialization.py:176: FutureWarning: `torch.jit.load` is deprecated. Please switch to `torch.export`.
+  warnings.warn(
+learned/gt-boxes: 24 in-scope images contain a diode
+  C8    8/8
+  C9    8/8
+  C12   0/0
+  diode polarity: 16/16 = 1.000
+wrote outputs\diodes.json

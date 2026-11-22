@@ -1,0 +1,474 @@
+{
+  "gt-boxes": {
+    "images": 64,
+    "ok": 64,
+    "rate": 1.0,
+    "per_circuit": {
+      "C2": {
+        "ok": 8,
+        "n": 8
+      },
+      "C3": {
+        "ok": 8,
+        "n": 8
+      },
+      "C4": {
+        "ok": 8,
+        "n": 8
+      },
+      "C5": {
+        "ok": 8,
+        "n": 8
+      },
+      "C8": {
+        "ok": 8,
+        "n": 8
+      },
+      "C9": {
+        "ok": 8,
+        "n": 8
+      },
+      "C10": {
+        "ok": 8,
+        "n": 8
+      },
+      "C11": {
+        "ok": 8,
+        "n": 8
+      }
+    },
+    "analysis": ".op",
+    "method": "unet"
+  },
+  "rows": [
+    {
+      "stem": "C10_D1_P1",
+      "circuit": "C10",
+      "ok": true,
+      "note": "OK: 8 pins, net partition matches LTspice"
+    },
+    {
+      "stem": "C10_D1_P2",
+      "circuit": "C10",
+      "ok": true,
+      "note": "OK: 8 pins, net partition matches LTspice"
+    },
+    {
+      "stem": "C10_D1_P3",
+      "circuit": "C10",
+      "ok": true,
+      "note": "OK: 8 pins, net partition matches LTspice"
+    },
+    {
+      "stem": "C10_D1_P4",
+      "circuit": "C10",
+      "ok": true,
+      "note": "OK: 8 pins, net partition matches LTspice"
+    },
+    {
+      "stem": "C10_D2_P1",
+      "circuit": "C10",
+      "ok": true,
+      "note": "OK: 8 pins, net partition matches LTspice"
+    },
+    {
+      "stem": "C10_D2_P2",
+      "circuit": "C10",
+      "ok": true,
+      "note": "OK: 8 pins, net partition matches LTspice"
+    },
+    {
+      "stem": "C10_D2_P3",
+      "circuit": "C10",
+      "ok": true,
+      "note": "OK: 8 pins, net partition matches LTspice"
+    },
+    {
+      "stem": "C10_D2_P4",
+      "circuit": "C10",
+      "ok": true,
+      "note": "OK: 8 pins, net partition matches LTspice"
+    },
+    {
+      "stem": "C11_D1_P1",
+      "circuit": "C11",
+      "ok": true,
+      "note": "OK: 10 pins, net partition matches LTspice"
+    },
+    {
+      "stem": "C11_D1_P2",
+      "circuit": "C11",
+      "ok": true,
+      "note": "OK: 10 pins, net partition matches LTspice"
+    },
+    {
+      "stem": "C11_D1_P3",
+      "circuit": "C11",
+      "ok": true,
+      "note": "OK: 10 pins, net partition matches LTspice"
+    },
+    {
+      "stem": "C11_D1_P4",
+      "circuit": "C11",
+      "ok": true,
+      "note": "OK: 10 pins, net partition matches LTspice"
+    },
+    {
+      "stem": "C11_D2_P1",
+      "circuit": "C11",
+      "ok": true,
+      "note": "OK: 10 pins, net partition matches LTspice"
+    },
+    {
+      "stem": "C11_D2_P2",
+      "circuit": "C11",
+      "ok": true,
+      "note": "OK: 10 pins, net partition matches LTspice"
+    },
+    {
+      "stem": "C11_D2_P3",
+      "circuit": "C11",
+      "ok": true,
+      "note": "OK: 10 pins, net partition matches LTspice"
+    },
+    {
+      "stem": "C11_D2_P4",
+      "circuit": "C11",
+      "ok": true,
+      "note": "OK: 10 pins, net partition matches LTspice"
+    },
+    {
+      "stem": "C2_D1_P1",
+      "circuit": "C2",
+      "ok": true,
+      "note": "OK: 21 pins, net partition matches LTspice"
+    },
+    {
+      "stem": "C2_D1_P2",
+      "circuit": "C2",
+      "ok": true,
+      "note": "OK: 21 pins, net partition matches LTspice"
+    },
+    {
+      "stem": "C2_D1_P3",
+      "circuit": "C2",
+      "ok": true,
+      "note": "OK: 21 pins, net partition matches LTspice"
+    },
+    {
+      "stem": "C2_D1_P4",
+      "circuit": "C2",
+      "ok": true,
+      "note": "OK: 21 pins, net partition matches LTspice"
+    },
+    {
+      "stem": "C2_D2_P1",
+      "circuit": "C2",
+      "ok": true,
+      "note": "OK: 21 pins, net partition matches LTspice"
+    },
+    {
+      "stem": "C2_D2_P2",
+      "circuit": "C2",
+      "ok": true,
+      "note": "OK: 21 pins, net partition matches LTspice"
+    },
+    {
+      "stem": "C2_D2_P3",
+      "circuit": "C2",
+      "ok": true,
+      "note": "OK: 21 pins, net partition matches LTspice"
+    },
+    {
+      "stem": "C2_D2_P4",
+      "circuit": "C2",
+      "ok": true,
+      "note": "OK: 21 pins, net partition matches LTspice"
+    },
+    {
+      "stem": "C3_D1_P1",
+      "circuit": "C3",
+      "ok": true,
+      "note": "OK: 6 pins, net partition matches LTspice"
+    },
+    {
+      "stem": "C3_D1_P2",
+      "circuit": "C3",
+      "ok": true,
+      "note": "OK: 6 pins, net partition matches LTspice"
+    },
+    {
+      "stem": "C3_D1_P3",
+      "circuit": "C3",
+      "ok": true,
+      "note": "OK: 6 pins, net partition matches LTspice"
+    },
+    {
+      "stem": "C3_D1_P4",
+      "circuit": "C3",
+      "ok": true,
+      "note": "OK: 6 pins, net partition matches LTspice"
+    },
+    {
+      "stem": "C3_D2_P1",
+      "circuit": "C3",
+      "ok": true,
+      "note": "OK: 6 pins, net partition matches LTspice"
+    },
+    {
+      "stem": "C3_D2_P2",
+      "circuit": "C3",
+      "ok": true,
+      "note": "OK: 6 pins, net partition matches LTspice"
+    },
+    {
+      "stem": "C3_D2_P3",
+      "circuit": "C3",
+      "ok": true,
+      "note": "OK: 6 pins, net partition matches LTspice"
+    },
+    {
+      "stem": "C3_D2_P4",
+      "circuit": "C3",
+      "ok": true,
+      "note": "OK: 6 pins, net partition matches LTspice"
+    },
+    {
+      "stem": "C4_D1_P1",
+      "circuit": "C4",
+      "ok": true,
+      "note": "OK: 8 pins, net partition matches LTspice"
+    },
+    {
+      "stem": "C4_D1_P2",
+      "circuit": "C4",
+      "ok": true,
+      "note": "OK: 8 pins, net partition matches LTspice"
+    },
+    {
+      "stem": "C4_D1_P3",
+      "circuit": "C4",
+      "ok": true,
+      "note": "OK: 8 pins, net partition matches LTspice"
+    },
+    {
+      "stem": "C4_D1_P4",
+      "circuit": "C4",
+      "ok": true,
+      "note": "OK: 8 pins, net partition matches LTspice"
+    },
+    {
+      "stem": "C4_D2_P1",
+      "circuit": "C4",
+      "ok": true,
+      "note": "OK: 8 pins, net partition matches LTspice"
+    },
+    {
+      "stem": "C4_D2_P2",
+      "circuit": "C4",
+      "ok": true,
+      "note": "OK: 8 pins, net partition matches LTspice"
+    },
+    {
+      "stem": "C4_D2_P3",
+      "circuit": "C4",
+      "ok": true,
+      "note": "OK: 8 pins, net partition matches LTspice"
+    },
+    {
+      "stem": "C4_D2_P4",
+      "circuit": "C4",
+      "ok": true,
+      "note": "OK: 8 pins, net partition matches LTspice"
+    },
+    {
+      "stem": "C5_D1_P1",
+      "circuit": "C5",
+      "ok": true,
+      "note": "OK: 6 pins, net partition matches LTspice"
+    },
+    {
+      "stem": "C5_D1_P2",
+      "circuit": "C5",
+      "ok": true,
+      "note": "OK: 6 pins, net partition matches LTspice"
+    },
+    {
+      "stem": "C5_D1_P3",
+      "circuit": "C5",
+      "ok": true,
+      "note": "OK: 6 pins, net partition matches LTspice"
+    },
+    {
+      "stem": "C5_D1_P4",
+      "circuit": "C5",
+      "ok": true,
+      "note": "OK: 6 pins, net partition matches LTspice"
+    },
+    {
+      "stem": "C5_D2_P1",
+      "circuit": "C5",
+      "ok": true,
+      "note": "OK: 6 pins, net partition matches LTspice"
+    },
+    {
+      "stem": "C5_D2_P2",
+      "circuit": "C5",
+      "ok": true,
+      "note": "OK: 6 pins, net partition matches LTspice"
+    },
+    {
+      "stem": "C5_D2_P3",
+      "circuit": "C5",
+      "ok": true,
+      "note": "OK: 6 pins, net partition matches LTspice"
+    },
+    {
+      "stem": "C5_D2_P4",
+      "circuit": "C5",
+      "ok": true,
+      "note": "OK: 6 pins, net partition matches LTspice"
+    },
+    {
+      "stem": "C8_D1_P1",
+      "circuit": "C8",
+      "ok": true,
+      "note": "OK: 24 pins, net partition matches LTspice"
+    },
+    {
+      "stem": "C8_D1_P2",
+      "circuit": "C8",
+      "ok": true,
+      "note": "OK: 24 pins, net partition matches LTspice"
+    },
+    {
+      "stem": "C8_D1_P3",
+      "circuit": "C8",
+      "ok": true,
+      "note": "OK: 24 pins, net partition matches LTspice"
+    },
+    {
+      "stem": "C8_D1_P4",
+      "circuit": "C8",
+      "ok": true,
+      "note": "OK: 23 pins, net partition matches LTspice"
+    },
+    {
+      "stem": "C8_D2_P1",
+      "circuit": "C8",
+      "ok": true,
+      "note": "OK: 24 pins, net partition matches LTspice"
+    },
+    {
+      "stem": "C8_D2_P2",
+      "circuit": "C8",
+      "ok": true,
+      "note": "OK: 24 pins, net partition matches LTspice"
+    },
+    {
+      "stem": "C8_D2_P3",
+      "circuit": "C8",
+      "ok": true,
+      "note": "OK: 24 pins, net partition matches LTspice"
+    },
+    {
+      "stem": "C8_D2_P4",
+      "circuit": "C8",
+      "ok": true,
+      "note": "OK: 24 pins, net partition matches LTspice"
+    },
+    {
+      "stem": "C9_D1_P1",
+      "circuit": "C9",
+      "ok": true,
+      "note": "OK: 10 pins, net partition matches LTspice"
+    },
+    {
+      "stem": "C9_D1_P2",
+      "circuit": "C9",
+      "ok": true,
+      "note": "OK: 10 pins, net partition matches LTspice"
+    },
+    {
+      "stem": "C9_D1_P3",
+      "circuit": "C9",
+      "ok": true,
+      "note": "OK: 10 pins, net partition matches LTspice"
+    },
+    {
+      "stem": "C9_D1_P4",
+      "circuit": "C9",
+      "ok": true,
+      "note": "OK: 10 pins, net partition matches LTspice"
+    },
+    {
+      "stem": "C9_D2_P1",
+      "circuit": "C9",
+      "ok": true,
+      "note": "OK: 10 pins, net partition matches LTspice"
+    },
+    {
+      "stem": "C9_D2_P2",
+      "circuit": "C9",
+      "ok": true,
+      "note": "OK: 10 pins, net partition matches LTspice"
+    },
+    {
+      "stem": "C9_D2_P3",
+      "circuit": "C9",
+      "ok": true,
+      "note": "OK: 10 pins, net partition matches LTspice"
+    },
+    {
+      "stem": "C9_D2_P4",
+      "circuit": "C9",
+      "ok": true,
+      "note": "OK: 10 pins, net partition matches LTspice"
+    }
+  ],
+  "full-system": {
+    "images": 72,
+    "ok": 72,
+    "rate": 1.0,
+    "per_circuit": {
+      "C2": {
+        "ok": 8,
+        "n": 8
+      },
+      "C3": {
+        "ok": 8,
+        "n": 8
+      },
+      "C4": {
+        "ok": 8,
+        "n": 8
+      },
+      "C5": {
+        "ok": 8,
+        "n": 8
+      },
+      "C8": {
+        "ok": 8,
+        "n": 8
+      },
+      "C9": {
+        "ok": 8,
+        "n": 8
+      },
+      "C10": {
+        "ok": 8,
+        "n": 8
+      },
+      "C11": {
+        "ok": 8,
+        "n": 8
+      },
+      "C12": {
+        "ok": 8,
+        "n": 8
+      }
+    },
+    "analysis": ".op",
+    "method": "unet"
+  }
+}

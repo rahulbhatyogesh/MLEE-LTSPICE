@@ -133,3 +133,136 @@ def compare(stem: str, circuit: str, pred: dict, ref: dict,
         sig_p=sp, sig_r=sr_, sig_f1=sf,
         n_pred=len(pred), n_ref=len(ref),
     )
+
+
+def _is_multi(name: str, nets: list) -> bool:
+    return len(nets) > 2
+
+
+def _is_diode(name: str, nets: list) -> bool:
+    return len(nets) == 2 and name[:1].upper() == "D"
+
+
+def pin_role_accuracy(pred: dict, ref: dict, pin_ground: bool = True,
+                      max_maps: int = 2000, select=_is_multi) -> tuple[int, int]:
+    """``(correct, total)`` pin orders for the devices ``select`` picks out.
+
+    Exact match cannot see this. :func:`netlist_to_graph` is undirected and
+    :func:`_signatures` sorts each component's legs, so a transistor with its
+    collector and emitter transposed is isomorphic to the correct circuit --
+    which is right for the question "is the wiring the same" and wrong for
+    "will it simulate". This asks the second question.
+
+    Net names do not correspond between the two netlists, so the mapping comes
+    from the isomorphism itself. Several isomorphisms usually exist (a pair of
+    identical parallel resistors makes two), and they are not equally kind to
+    us, so we score the best one -- scoring an arbitrary one would measure
+    which mapping the search happened to emit first. Returns ``(0, 0)`` when
+    the graphs are not isomorphic at all, since without a correspondence
+    between nets there is nothing to compare.
+    """
+    multi = {r: n for r, n in ref.items() if select(r, n)}
+    if not multi:
+        return 0, 0
+    gp = netlist_to_graph(pred, pin_ground)
+    gr = netlist_to_graph(ref, pin_ground)
+    gm = nx.algorithms.isomorphism.GraphMatcher(gp, gr, node_match=_node_match)
+
+    best = -1
+    total = sum(1 for r, n in pred.items() if select(r, n))
+    if total == 0:
+        return 0, len(multi)
+    for seen, mapping in enumerate(gm.isomorphisms_iter()):
+        if seen >= max_maps:
+            break
+        correct = 0
+        for p_ref, p_nets in pred.items():
+            if not select(p_ref, p_nets):
+                continue
+            r_node = mapping.get(("c", p_ref))
+            if r_node is None:
+                continue
+            r_nets = ref.get(r_node[1])
+            if r_nets is None or len(r_nets) != len(p_nets):
+                continue
+            # Map each of our nets into the reference's naming and compare
+            # pin by pin: same nets in the same order, or it does not count.
+            ours = []
+            for net in p_nets:
+                n_node = mapping.get(("n", "0" if net in GROUND_NAMES else net))
+                ours.append(n_node[1] if n_node else None)
+            theirs = ["0" if n in GROUND_NAMES else n for n in r_nets]
+            correct += int(ours == theirs)
+        best = max(best, correct)
+        if best == total:
+            break
+    return (max(best, 0), total) if best >= 0 else (0, 0)
+
+
+def polarity_accuracy(pred: dict, ref: dict, pin_ground: bool = True,
+                      max_maps: int = 2000) -> tuple[int, int]:
+    """``(correct, total)`` for the two-terminal *polar* parts: the diodes.
+
+    The same blind spot as :func:`pin_role_accuracy`, one terminal fewer.
+    Exact match sorts a component's legs before comparing, so a diode soldered
+    in backwards is isomorphic to one the right way round -- the wiring is the
+    same and the circuit is not, because a reversed diode conducts when it
+    should block. This asks the question exact match throws away.
+    """
+    return pin_role_accuracy(pred, ref, pin_ground, max_maps, select=_is_diode)
+
+
+def value_f1(pred: dict, ref: dict) -> tuple[float, float, float]:
+    """Precision/recall/F1 over the multiset of (element type, value) pairs.
+
+    A *bill of values*, deliberately built the same way as :func:`count_f1`'s
+    bill of materials: a multiset comparison needs no correspondence between
+    our instance names and LTspice's, which do not line up because ours come
+    from position on the page and theirs from the reference schematic.
+
+    Values are compared numerically, so ``10k`` matches ``10000`` and the
+    reference's ``1µ`` matches our ``1u``.
+    """
+    from .values import to_magnitude
+
+    def bag(d: dict) -> Counter:
+        c: Counter = Counter()
+        for r, v in d.items():
+            mag = to_magnitude(v)
+            if isinstance(mag, float):
+                mag = round(mag, 12)
+            c[(r[0].upper(), mag)] += 1
+        return c
+
+    bp, br = bag(pred), bag(ref)
+    tp = sum((bp & br).values())
+    p = tp / max(1, sum(bp.values()))
+    r = tp / max(1, sum(br.values()))
+    f = 2 * p * r / (p + r) if p + r else 0.0
+    return p, r, f
+
+
+#: Reference "values" that carry no information: LTspice prints the bare symbol
+#: letter when a component's Value attribute is empty, and a generic model name
+#: when none was chosen.
+_UNVALUED = {"R", "C", "L", "V", "I", "D", "Q", "M", "S", "NPN", "PNP", "NMOS", "PMOS"}
+
+
+def informative_values(ref: dict) -> dict:
+    """The reference entries that actually state a value.
+
+    Several CGHD reference schematics were drawn without filling in any
+    component values -- C10's netlist is literally ``R1 R`` / ``C1 C`` -- and
+    some sources carry an AC spec (``AC 2``, ``SINE(0 20m 400)``) that the
+    photograph never shows. Scoring against those measures the reference's
+    completeness, not our reading, so they are reported separately.
+    """
+    out = {}
+    for r, v in ref.items():
+        s = (v or "").strip()
+        if not s or s.upper() in _UNVALUED:
+            continue
+        if "(" in s or s.upper().startswith(("AC ", "DC ", "PULSE", "SINE")):
+            continue
+        out[r] = v
+    return out

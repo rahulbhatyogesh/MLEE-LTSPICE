@@ -1,0 +1,81 @@
+{
+  "image": "data/own/testing2.jpeg",
+  "note": "Our own drawing, written to the naming convention. Points are the top-left corner of each text box in the 1600px working image, which is how a reading is matched to its truth.",
+  "labels": [
+    {
+      "x": 1020,
+      "y": 111,
+      "text": "Cout"
+    },
+    {
+      "x": 869,
+      "y": 128,
+      "text": "10Ω"
+    },
+    {
+      "x": 798,
+      "y": 126,
+      "text": "R2 10Ω"
+    },
+    {
+      "x": 799,
+      "y": 129,
+      "text": "R2"
+    },
+    {
+      "x": 1320,
+      "y": 130,
+      "text": "Vout"
+    },
+    {
+      "x": 540,
+      "y": 135,
+      "text": "R1 1kΩ"
+    },
+    {
+      "x": 299,
+      "y": 156,
+      "text": "C1"
+    },
+    {
+      "x": 1032,
+      "y": 285,
+      "text": "1000F"
+    },
+    {
+      "x": 285,
+      "y": 317,
+      "text": "1pF"
+    },
+    {
+      "x": 105,
+      "y": 348,
+      "text": "Vin"
+    },
+    {
+      "x": 804,
+      "y": 488,
+      "text": "R3 10Ω"
+    },
+    {
+      "x": 350,
+      "y": 566,
+      "text": "6Ω"
+    },
+    {
+      "x": 274,
+      "y": 592,
+      "text": "R5"
+    },
+    {
+      "x": 1149,
+      "y": 633,
+      "text": "C2 10F"
+    },
+    {
+      "x": 810,
+      "y": 652,
+      "text": "R4 1Ω"
+    }
+  ]
+}

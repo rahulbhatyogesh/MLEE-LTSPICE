@@ -25,5 +25,8 @@ data = ["huggingface_hub>=0.23"]
 [project.scripts]
 circuit2spice = "circuit2spice.cli:main"
 
+[project.gui-scripts]
+circuit2spice-gui = "circuit2spice.gui:main"
+
 [tool.setuptools.packages.find]
 where = ["src"]

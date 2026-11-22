@@ -1,0 +1,8 @@
+C:\Users\rahul\OneDrive\Desktop\MLEEE Project\.venv\Lib\site-packages\torch\jit\_serialization.py:176: FutureWarning: `torch.jit.load` is deprecated. Please switch to `torch.export`.
+  warnings.warn(
+arrowhead/gt-boxes: 24 in-scope images contain a multi-pin part
+  C2    7/7
+  C8    8/8
+  C12   0/0
+  pin-role accuracy: 15/15 = 1.000
+wrote outputs\pins.json

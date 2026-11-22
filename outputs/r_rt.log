@@ -1,0 +1,22 @@
+C:\Users\rahul\OneDrive\Desktop\MLEEE Project\.venv\Lib\site-packages\torch\jit\_serialization.py:176: FutureWarning: `torch.jit.load` is deprecated. Please switch to `torch.export`.
+  warnings.warn(
+  0/64  (4s)
+  8/64  (18s)
+  16/64  (31s)
+  24/64  (43s)
+  32/64  (56s)
+  40/64  (68s)
+  48/64  (81s)
+  56/64  (96s)
+
+gt-boxes: LTspice round-trip over 64 in-scope images
+  C2   8/8
+  C3   8/8
+  C4   8/8
+  C5   8/8
+  C8   8/8
+  C9   8/8
+  C10  8/8
+  C11  8/8
+  round-trip OK: 64/64 = 1.000
+wrote outputs\roundtrip.json

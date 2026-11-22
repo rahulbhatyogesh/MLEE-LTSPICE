@@ -1,0 +1,22 @@
+{
+  "drafters": [
+    "drafter_29",
+    "drafter_30",
+    "drafter_31",
+    "drafter_32"
+  ],
+  "gt_boxes": {
+    "images": 312,
+    "components": 2477,
+    "connected_frac_mean": 0.5602,
+    "fully_connected_rate": 0.2083
+  },
+  "full_system": {
+    "images": 302,
+    "components": 2048,
+    "connected_frac_mean": 0.585,
+    "fully_connected_rate": 0.2417
+  },
+  "map50_test": 0.6912,
+  "map50_95_test": 0.4684
+}

@@ -1,0 +1,127 @@
+{
+  "image": "data/own/testing2.jpeg",
+  "backend": "ollama",
+  "model": null,
+  "labels": 15,
+  "read": 16,
+  "boxes": 16,
+  "correct": 14,
+  "wrong": 1,
+  "accuracy": 0.9333333333333333,
+  "seconds": 4.6,
+  "seconds_per_label": 0.3,
+  "rows": [
+    {
+      "truth": "Cout",
+      "read": "Cout",
+      "designator": "Cout",
+      "value": null,
+      "correct": true
+    },
+    {
+      "truth": "10Ω",
+      "read": "10Ω",
+      "designator": null,
+      "value": "10",
+      "correct": true
+    },
+    {
+      "truth": "R2 10Ω",
+      "read": "R2 10Ω",
+      "designator": "R2",
+      "value": "10",
+      "correct": true
+    },
+    {
+      "truth": "R2",
+      "read": "R2",
+      "designator": "R2",
+      "value": null,
+      "correct": true
+    },
+    {
+      "truth": "Vout",
+      "read": "Vout",
+      "designator": "Vout",
+      "value": null,
+      "correct": true
+    },
+    {
+      "truth": "R1 1kΩ",
+      "read": "R1 1k-",
+      "designator": "R1",
+      "value": "1k",
+      "correct": true
+    },
+    {
+      "truth": "C1",
+      "read": "C1",
+      "designator": "C1",
+      "value": null,
+      "correct": true
+    },
+    {
+      "truth": "1000F",
+      "read": "1000F",
+      "designator": null,
+      "value": "1000",
+      "correct": true
+    },
+    {
+      "truth": "1pF",
+      "read": "1pF",
+      "designator": null,
+      "value": "1p",
+      "correct": true
+    },
+    {
+      "truth": "Vin",
+      "read": "",
+      "designator": null,
+      "value": null,
+      "correct": false
+    },
+    {
+      "truth": "R3 10Ω",
+      "read": "R310Ω",
+      "designator": "R3",
+      "value": "10",
+      "correct": true
+    },
+    {
+      "truth": "6Ω",
+      "read": "6Ω",
+      "designator": null,
+      "value": "6",
+      "correct": true
+    },
+    {
+      "truth": "R5",
+      "read": "R5",
+      "designator": "R5",
+      "value": null,
+      "correct": true
+    },
+    {
+      "truth": "C2 10F",
+      "read": "C2 10F",
+      "designator": "C2",
+      "value": "10",
+      "correct": true
+    },
+    {
+      "truth": "R4 1Ω",
+      "read": "R4 1Ω",
+      "designator": "R4",
+      "value": "1",
+      "correct": true
+    },
+    {
+      "truth": null,
+      "read": "",
+      "designator": null,
+      "value": null,
+      "correct": false
+    }
+  ]
+}

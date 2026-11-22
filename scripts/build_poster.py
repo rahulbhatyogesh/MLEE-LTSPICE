@@ -31,6 +31,8 @@ def load(name, default=None):
 
 BENCH, ABL, SVM = load("benchmark.json"), load("ablation_preproc.json"), load("baseline_svm.json")
 DET = load("detector.json", {})
+FULL_UNET = load("benchmark_unet_full.json", {}).get("full-system", {})
+DIODE = load("diode_orient.json", {})
 GT = BENCH.get("gt-boxes", {})
 TODO = r"\textit{pending}"
 
@@ -45,6 +47,20 @@ A_AD = ABL.get("adaptive|none|thinNone", {})
 A_FL = ABL.get("flatfield|none|thinNone", {})
 A_TH = ABL.get("flatfield|mask|thin50.0", {})
 DET_MAP = f(DET.get("map50")) if DET else TODO
+D_ACC, D_N = f(DIODE.get("accuracy")), str(DIODE.get("n", "?"))
+RT = load("roundtrip.json", {}).get("gt-boxes", {})
+RT_TXT = f"{RT['ok']}/{RT['images']}" if RT else TODO
+_p = load("pins.json", {}).get("arrowhead/gt-boxes", {})
+_p0 = load("pins.json", {}).get("positional/gt-boxes", {})
+PIN_TXT = f"{_p['pins_correct']}/{_p['pins_scored']}" if _p else TODO
+PIN0_TXT = f"{_p0['pins_correct']}/{_p0['pins_scored']}" if _p0 else TODO
+_d = load("diodes.json", {}).get("learned/gt-boxes", {})
+_d0 = load("diodes.json", {}).get("blind/gt-boxes", {})
+DIO_TXT = f"{_d['diodes_correct']}/{_d['diodes_scored']}" if _d else TODO
+DIO0_TXT = f"{_d0['diodes_correct']}/{_d0['diodes_scored']}" if _d0 else TODO
+_v = load("values.json", {}).get("gt-boxes", {}).get("informative", {})
+VAL_READ, VAL_DEF = f(_v.get("read")), f(_v.get("default"))
+N_IMG = str(GT.get("images", 64))
 
 
 BODY = r"""
@@ -114,6 +130,12 @@ BODY = r"""
           \textbf{stroke-thickness filter} to strip printed page ruling.
     \item \textbf{Trace:} skeleton $\rightarrow$ connected components
           $\rightarrow$ nodes; junctions union, crossovers re-link collinear stubs.
+    \item \textbf{Order the pins:} isomorphism cannot see a reversed part, so
+          the base is read from the bar, the emitter from the arrowhead, a
+          gate from the lone lead, and a diode's polarity from a learned angle
+          head. Each \emph{declines} when the drawing does not say.
+    \item \textbf{Read the labels:} closed-vocabulary scoring, then a local
+          vision-language model: component values F1 __VALD__ $\rightarrow$ __VALR__.
     \item \textbf{Write:} SPICE deck + LTspice \texttt{.asc}.
   \end{enumerate}
 }
@@ -127,7 +149,7 @@ BODY = r"""
     Dataset        & CGHD, 3{,}269 photographs, 16 merged classes \\
     Split          & by drafter: 4 test, 3 validation \\
     Detector       & YOLOv8s, 896\,px, 50 epochs, mosaic + flips \\
-    Evaluation     & 96 photographs with reference LTspice schematics \\
+    Evaluation     & __NIMG__ in-scope photographs, reference schematics \\
     Tools          & PyTorch, Ultralytics, OpenCV, NetworkX, LTspice 26.1.1 \\
     \bottomrule
   \end{tabular}
@@ -136,13 +158,14 @@ BODY = r"""
 
 
 % ------------------------- RIGHT COLUMN ------------------------------
+
 \column{0.5}
 
 \block{Results}{
-  \figslot{fig_result2.png}{0.93\linewidth}{8cm}%
-    {Figure placeholder\\Per-stage results\\(save as fig\_result2.png)}
-  \figcap{Figure 2: The gap between finding the parts (__BOM__) and recovering
-  the circuit (__EXACT__) \emph{is} the finding.}
+  \figslot{fig_qualitative.png}{0.97\linewidth}{5.5cm}%
+    {Figure placeholder: photograph, detections, nets}
+  \figcap{Figure 2: Photograph, detected symbols, and the electrical nodes
+  recovered from what is left once they are erased---one colour per net.}
 
   \begin{center}
   \begin{tabular}{lll}
@@ -157,15 +180,26 @@ BODY = r"""
     This work & bill of materials (F1) & __BOM__ \\
     This work & local topology (F1)    & __SIG__ \\
     \textbf{This work} & \textbf{whole circuit (exact)} & \textbf{__EXACT__} \\
+    \midrule
+    \textbf{This work} & \textbf{LTspice accepts the .asc} & \textbf{__RT__} \\
+    This work & transistor pins C/B/E & __PIN__ \\
+    \quad\textit{ablation: stage off} & \textit{pins in found order} & \textit{__PIN0__} \\
+    This work & diode polarity, end to end & __DIO__ \\
+    \quad\textit{ablation: stage off} & \textit{polarity never read} & \textit{__DIO0__} \\
+    This work & component values (F1) & __VALR__ \\
+    \quad\textit{ablation: stage off} & \textit{parts keep their defaults} & \textit{__VALD__} \\
     \bottomrule
   \end{tabular}
   \end{center}
-  \figcap{Table 1: Scored by graph isomorphism against reference netlists.}
+  \figcap{Table 1: __NIMG__ in-scope photographs, scored by graph isomorphism.
+  The lower half is what isomorphism \emph{cannot} see, each row paired with the
+  same measurement taken with that stage off. Note __DIO0__: positional order is
+  not a coin toss.}
 
-  \figslot{fig_result3.png}{0.93\linewidth}{7cm}%
+  \figslot{fig_result3.png}{0.90\linewidth}{5.2cm}%
     {Figure placeholder\\Ground-truth boxes vs trained detector\\(save as fig\_result3.png)}
-  \figcap{Figure 3: Swapping perfect boxes for the trained detector costs about
-  one point of exact match. \textbf{The detector is not the bottleneck.}}
+  \figcap{Figure 3: Perfect boxes to the trained detector costs __DETCOST__
+  points, segmentation held fixed. \textbf{The detector is not the bottleneck.}}
 
 }
 
@@ -174,17 +208,16 @@ BODY = r"""
     \item \textbf{Finding:} mid-nineties accuracy on isolated crops is real but
           measures a \emph{sub-problem}. Asked to produce a circuit, performance
           is governed by connectivity, which no reference work evaluates.
-    \item \textbf{Why ruling matters:} adaptive thresholding equalises local
-          contrast, promoting a faint printed rule line to the status of a
-          pencil stroke. One such line spans the page and welds every node into
-          one. Removing it \emph{by component} fails---where it crosses a wire
-          the two are one component. \textbf{Thickness cuts the crossing
-          instead:} ruling is 1--2\,px, pencil 3--6\,px.
+    \item \textbf{Why ruling matters:} equalising local contrast promotes a
+          printed rule line to the status of a pencil stroke, and one such line
+          welds every node into one. Removing it \emph{by component} fails:
+          where it crosses a wire, the two are one component. \textbf{Thickness
+          cuts the crossing instead} (ruling 1--2\,px, pencil 3--6\,px).
     \item \textbf{Strength:} every schematic passing verification opens and
           simulates in LTspice; arbitrary topologies, not parallel only.
-    \item \textbf{Limitation:} values are not read (defaults, user-editable);
-          3-terminal pin order is positional; evaluation uses one drafter's
-          96 photographs---the only ones with reference schematics.
+    \item \textbf{Limitation:} only one drafter ships reference schematics, and
+          that drafter was in the detector's training split. Op-amp pins cannot be
+          scored at all: CGHD gives an orientation for none of its 768.
   \end{itemize}
   \vspace{2mm}
   \begin{center}
@@ -207,17 +240,22 @@ BODY = r"""
           \textbf{F1 __BOM__}, exact circuit at \textbf{__EXACT__}.
     \item Component recognition is largely solved; \textbf{connectivity recovery
           is the open problem}.
-    \item \textbf{Future work:} read component values from the detected text
-          boxes; regress symbol orientation from CGHD's rotation annotations to
-          fix terminal order and polarity.
+    \item Symbol orientation \emph{is} regressed from CGHD's rotation
+          annotations: diode polarity \textbf{__DACC__} over __DN__ diodes,
+          held out by drafter.
+    \item \textbf{Future work:} a per-image segmentation threshold for the
+          densest drawings; four-terminal switches; PNP against NPN, for which
+          the arrowhead is already located and unused.
   \end{itemize}
 }
+
+
 
 \begin{subcolumns}
 \subcolumn{0.62}
 \block{References}{
-  {\small
-  \begin{enumerate}[label={[\arabic*]}, leftmargin=2.2em]
+  {\footnotesize
+  \begin{enumerate}[label={[\arabic*]}, leftmargin=1.9em, itemsep=1pt]
     \item A. Kumar and R. Merchant, ``Detection of hand drawn circuit schematic symbols,'' Stanford CS229 project report, 2021.
     \item M. M. \'Arnad\'ottir and \'O. Yngvason, ``From component detection to simulation of analog circuits using CNNs,'' Stanford CS230 project report, 2022.
     \item M. Aksakalli, ``Hand-drawn circuit recognizer,'' GitHub, 2018.
@@ -227,19 +265,18 @@ BODY = r"""
 }
 \subcolumn{0.38}
 \block{Report and Code}{
-  \begin{center}
+  {\centering
   \IfFileExists{\qrfile}{%
-    \includegraphics[width=7cm]{\qrfile}%
+    \includegraphics[width=3cm]{\qrfile}%
   }{%
     \begin{tikzpicture}
-      \node[draw=guidegrey, dashed, line width=2pt, minimum width=7cm,
-            minimum height=7cm, text=guidegrey, align=center,
+      \node[draw=guidegrey, dashed, line width=2pt, minimum width=4cm,
+            minimum height=4cm, text=guidegrey, align=center,
             font=\large\itshape] {QR code\\(report / repo)};
     \end{tikzpicture}%
-  }
-  \end{center}
-  {\small Contact: [email]\\Acknowledgements: instructor, TAs, and the authors
-  of the CGHD dataset (CC-BY 4.0).}
+  }\par}\vspace{0.6em}
+  {\footnotesize Acknowledgements: instructor, TAs, and the authors
+  of the CGHD dataset (CC-BY 4.0).\par}
 }
 \end{subcolumns}
 
@@ -263,8 +300,8 @@ def main() -> int:
     preamble = preamble.replace(
         r"\author{[Student Name 1] \;\textbullet\; [Student Name 2] \;\textbullet\; [Student Name 3]"
         "\n        \\;\\;|\\;\\; Team [ID]}",
-        r"\author{[Student Name 1] \;\textbullet\; [Student Name 2] \;\textbullet\; [Student Name 3]"
-        "\n        \\;\\;|\\;\\; Team [ID]}")
+        r"\author{Rahul Bhat Yogesh (2023B4A31035P) \;\textbullet\; "
+        r"Shukant Singh (2023B2A30922P)}")
     # tikzposter typesets the title in LR mode: it will not wrap, and a
     # manual break raises 'Not allowed in LR mode'.  Measured box width is
     # 1449pt, so the title has to fit one line at the chosen size.
@@ -272,14 +309,27 @@ def main() -> int:
         r"{\bfseries\fontsize{64}{72}\selectfont \@title \par}",
         r"{\bfseries\fontsize{54}{64}\selectfont \@title \par}")
     preamble = preamble.replace("[Semester, Year]", "Semester I, 2026--27")
+    preamble = preamble.replace(
+        r"\;\textbullet\; MLEE \;\textbullet\; Instructor: [Name] \;\textbullet\;",
+        r"\;\textbullet\; \mbox{Machine Learning for Electrical Engineering}"
+        r" \;\textbullet\; Instructor: Ritesh Vyas \;\textbullet\;")
+    # Ten blocks over two columns: 15mm between each is 135mm of the page
+    # spent on gaps, which is what pushed References off the bottom.
+    preamble = preamble.replace("blockverticalspace=15mm", "blockverticalspace=10mm")
 
     body = BODY
     for k, v in {
         "__BOM__": BOM, "__EXACT__": EXACT, "__SIG__": SIG, "__SVMACC__": SVM_ACC,
+        "__DACC__": D_ACC, "__DN__": D_N,
         "__AD_E__": f(A_AD.get("exact")), "__FL_E__": f(A_FL.get("exact")),
         "__TH_E__": f(A_TH.get("exact")), "__DETMAP__": DET_MAP,
         "__AD_S__": f(A_AD.get("sig_f1")), "__FL_S__": f(A_FL.get("sig_f1")),
         "__TH_S__": f(A_TH.get("sig_f1")),
+        "__RT__": RT_TXT, "__PIN__": PIN_TXT, "__PIN0__": PIN0_TXT,
+        "__DIO__": DIO_TXT, "__DIO0__": DIO0_TXT,
+        "__VALR__": VAL_READ, "__VALD__": VAL_DEF, "__NIMG__": N_IMG,
+        "__DETCOST__": f(abs(GT.get("exact", 0)
+                             - (FULL_UNET or {}).get("exact", 0)) * 100, 1),
     }.items():
         body = body.replace(k, v)
 
@@ -301,7 +351,8 @@ def main() -> int:
     if missing:
         print(f"  NOTE: add logo files to poster/ for the title block: {missing}")
 
-    leftover = [tok for tok in ("__BOM__", "__EXACT__", "__SIG__", "__AD_E__")
+    leftover = [tok for tok in ("__BOM__", "__EXACT__", "__SIG__", "__AD_E__",
+                               "__DACC__", "__DN__")
                 if tok in OUT.read_text(encoding="utf-8")]
     print("  unresolved tokens:", leftover or "none")
     # Match the actual block, not the preamble comment that names it.

@@ -1,0 +1,127 @@
+{
+  "image": "data/own/testing2.jpeg",
+  "backend": "vlm",
+  "model": null,
+  "labels": 15,
+  "read": 16,
+  "boxes": 16,
+  "correct": 15,
+  "wrong": 0,
+  "accuracy": 1.0,
+  "seconds": 163.5,
+  "seconds_per_label": 10.2,
+  "rows": [
+    {
+      "truth": "Cout",
+      "read": "Cout",
+      "designator": "Cout",
+      "value": null,
+      "correct": true
+    },
+    {
+      "truth": "10Ω",
+      "read": "10Ω",
+      "designator": null,
+      "value": "10",
+      "correct": true
+    },
+    {
+      "truth": "R2 10Ω",
+      "read": "R210r",
+      "designator": "R2",
+      "value": "10",
+      "correct": true
+    },
+    {
+      "truth": "R2",
+      "read": "R2",
+      "designator": "R2",
+      "value": null,
+      "correct": true
+    },
+    {
+      "truth": "Vout",
+      "read": "Vout",
+      "designator": "Vout",
+      "value": null,
+      "correct": true
+    },
+    {
+      "truth": "R1 1kΩ",
+      "read": "R11kΩ",
+      "designator": "R1",
+      "value": "1k",
+      "correct": true
+    },
+    {
+      "truth": "C1",
+      "read": "C1",
+      "designator": "C1",
+      "value": null,
+      "correct": true
+    },
+    {
+      "truth": "1000F",
+      "read": "1000f",
+      "designator": null,
+      "value": "1000",
+      "correct": true
+    },
+    {
+      "truth": "1pF",
+      "read": "1pf",
+      "designator": null,
+      "value": "1p",
+      "correct": true
+    },
+    {
+      "truth": "Vin",
+      "read": "vin",
+      "designator": "Vin",
+      "value": null,
+      "correct": true
+    },
+    {
+      "truth": "R3 10Ω",
+      "read": "R310Ω",
+      "designator": "R3",
+      "value": "10",
+      "correct": true
+    },
+    {
+      "truth": "6Ω",
+      "read": "6Ω",
+      "designator": null,
+      "value": "6",
+      "correct": true
+    },
+    {
+      "truth": "R5",
+      "read": "R5",
+      "designator": "R5",
+      "value": null,
+      "correct": true
+    },
+    {
+      "truth": "C2 10F",
+      "read": "C210F",
+      "designator": "C2",
+      "value": "10",
+      "correct": true
+    },
+    {
+      "truth": "R4 1Ω",
+      "read": "R41Ω",
+      "designator": "R4",
+      "value": "1",
+      "correct": true
+    },
+    {
+      "truth": null,
+      "read": "",
+      "designator": null,
+      "value": null,
+      "correct": false
+    }
+  ]
+}

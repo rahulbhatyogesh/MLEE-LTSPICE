@@ -60,15 +60,22 @@ def _partition(pairs: dict) -> dict:
     return out
 
 
-def verify_graph(graph: CircuitGraph, asc_path: str | Path) -> VerifyResult:
-    """Write ``graph`` to ``asc_path`` and check LTspice agrees with it."""
-    write_asc(graph, asc_path)
+def verify_graph(graph: CircuitGraph, asc_path: str | Path, **kw) -> VerifyResult:
+    """Write ``graph`` to ``asc_path`` and check LTspice agrees with it.
+
+    Extra keyword arguments go through to :func:`write_asc`. Passing
+    ``analysis`` matters: this function *rewrites* the file, so without it a
+    caller that had already written the schematic with, say, ``.tran`` gets it
+    silently replaced by the default ``.op`` and then wonders why the
+    simulation produced an operating point.
+    """
+    write_asc(graph, asc_path, **kw)
     text = ltspice.netlist(asc_path)
     actual = ltspice.parse_netlist(text)
 
     intended: dict = {}
     for comp in graph.components:
-        for i, node in enumerate(comp.nodes):
+        for i, node in enumerate(graph.wired_nodes(comp)):
             if node >= 0:
                 intended[(comp.ref, i)] = f"node{node}"
 
@@ -81,7 +88,7 @@ def verify_graph(graph: CircuitGraph, asc_path: str | Path) -> VerifyResult:
         nets = actual.get(comp.ref)
         if nets is None:
             continue
-        for i, node in enumerate(comp.nodes):
+        for i, node in enumerate(graph.wired_nodes(comp)):
             if node < 0 or i >= len(nets):
                 continue
             net = nets[i]
