@@ -20,11 +20,11 @@ Every reference this project builds on stops short of a usable circuit:
 | Work | Method | Reported | Where it stops |
 |---|---|---|---|
 | Kumar & Merchant (CS229) | MobileNet transfer, 8 classes | 96% on crops | grid/sliding-window on full schematics "performed poorly"; no netlist |
-| Árnadóttir & Yngvason (CS230) | 4-conv CNN, 14 classes | 95.4% crops, 79.4% boxes | HSPICE netlist for **parallel circuits only**; values typed by hand |
+| Árnadóttir & Yngvason | 4-conv CNN, 14 classes | 95.4% crops, 79.4% boxes | HSPICE netlist for **parallel circuits only**; values typed by hand |
 | Liu & Xiao | Fourier descriptors + SVM | 94.4% | 5 classes, 6 circuits, no netlist |
 | Aksakalli, `circuit_recognizer` | threshold → skeleton → HOG+SVM | 6 classes | emits `.asc`, but hand-engineered throughout |
 
-The CS230 report says plainly: *"Using YOLO was our original intention. However,
+The previous report says plainly: *"Using YOLO was our original intention. However,
 this algorithm would require a dataset with labeled bounding boxes, which was
 not to be found on the web."*
 
